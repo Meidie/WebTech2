@@ -7,6 +7,11 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
 if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
 
+//pre select
+/*foreach ($language['array'] as $select){
+    echo $select;
+}*/
+
 ?>
 
 <!DOCTYPE html>
@@ -78,17 +83,96 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
     <div id="caption">
         <h2><?php echo $language['h2AdminResults'];?></h2>
         <div class="or-seperator"></div>
+
+        <form>
+            <div class="form-check form-check-inline">
+                <input class='form-check-input' type='radio' name='choice' id='add' onchange="change(id)"  <?php if(isset($_POST['submitAdd']) || !isset($_POST['submitCheck'])){ echo 'checked';} ?> >
+                <label class="form-check-label" for="add"><?php echo $language['radio1'];?></label>
+            </div>
+
+            <div class="form-check form-check-inline" >
+                <input class='form-check-input' type='radio' name='choice' id='show' onchange="change(id)" <?php if(isset($_POST['submitCheck'])){ echo 'checked';} ?>>
+                <label class='form-check-label' for='show'><?php echo $language['radio2'];?></label>
+            </div>
+        </form>
     </div>
     <div id="data">
 
+        <div class="alert alert-warning" role="alert" id="alert">
+            <?php echo $language['alert'];?>
+        </div>
+        <form enctype="multipart/form-data" action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?> >
+            <div class="form-row" >
+                <div class="form-group col-md-6">
+                    <label for="inputSubject"><?php echo $language['lSubject'];?></label>
+                    <input type="text" class="form-control" id="inputSubject" name="subject" placeholder="<?php echo $language['phSubject'];?>" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputYear"><?php echo $language['lYear'];?></label>
+                    <select class="form-control" id="inputYear" name="year">
+                        <option data-option="">--</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputSeparator"><?php echo $language['separator'];?></label>
+                    <input type="text" class="form-control" id="inputSeparator" name="separator" placeholder="" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputFile"><?php echo $language['file'];?></label>
+                    <input type="file" id="inputFile"  name="file" style="background-color:#D8D8D8" placeholder="" required>
+                    <br>
+                    <input type="text" id="fileName" value="" readonly >
+                    <button type="button" class="btn color-black text-white" id="uploadButton"><?php echo $language['selectFile'];?></button>
+                </div>
+            </div>
+            <input type="submit" name="submitAdd" value="<?php echo $language['submit1'];?>" class="btn btn-primary mb-2" id="button">
+        </form>
+
+        <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(isset($_POST['submitAdd']) || !isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?>>
+            <div class="form-row" >
+                <div class="form-group col-md-6">
+                    <label for="inputName"><?php echo $language['lSubject'];?></label>
+                    <input type="text" class="form-control" id="inputSubject" name="name" placeholder="<?php  if(isset($_POST['submitCheck'])){echo $_POST['name'];}else{echo $language['phSubject']; }?>" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputYear"><?php echo $language['lYear'];?></label>
+                    <select class="form-control" id="inputYear" name="year">
+                        <option data-option="">--</option>
+                    </select>
+                </div>
+            </div>
+            <input type="submit" name="submitCheck" value="<?php echo $language['submit2'];?>" class="btn btn-primary mb-2" id="submitCheck">
+        </form>
+
+        <div id="table">
+
+
+            <?php
 
 
 
+            if(isset($_POST['submitCheck'])){
+                echo $_POST['name'];
+                echo $_POST['year'];
+            }
+            else if(isset($_POST['submitAdd'])){
+                echo $_POST['subject'];
+                echo $_POST['year'];
+                echo $_POST['separator'];
+                echo $_POST['file'];
+            }
+            ?>
+        </div>
     </div>
+
+
 
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/main.js"></script>
 </body>
 </html>

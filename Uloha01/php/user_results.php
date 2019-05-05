@@ -91,6 +91,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
               die("Connection failed: " . $conn->connect_error);
             }
             $id = $_SESSION['id'];
+            //vyhladam pre daneho studenta vsetky predmety v ktorych ma zdane nejake udaje
             $sql = "SELECT Predmet from Predmety WHERE id_student = $id ";
             $result = $conn->query($sql);
 
@@ -99,22 +100,26 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
                 echo "<h3 style='margin-bottom: 20px'>".$row['Predmet']."</h3>";
 
-
                 $subject = $row['Predmet'];
 
+                //ziskam nazvy stlpcov v danom predmete
                 $sql = "SHOW columns FROM $subject";
                 $result2 = mysqli_query($conn,$sql);
+
 
                 echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
                             <thead >
                                 <tr class=\"color-black text-white\">";
 
+                //vytvorim hlavicku tabulky
                 while($row2 = mysqli_fetch_array($result2)){
+
+                    //ak sa stlpec nevola meno alebo rok vypisuje data
                     if($row2['Field'] != 'Meno' && $row2['Field'] != 'id' && $row2['Field'] != 'Rok')
                     echo "<th scope=col>".$row2['Field']."</th>";
                 }
 
-
+                //ziskam vsetky udaje k danym stlpcom
                 $sql = "SELECT * from $subject  WHERE id = $id ";
                 $result3 = $conn->query($sql);
 
@@ -126,7 +131,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                             <tbody>
                                 <tr>";
 
-
+                    //vypisem udaje do tabulky
                     while($row3 = $result3->fetch_assoc()) {
 
                         echo "<th>".$row3['Cvicenie']."</th>";
