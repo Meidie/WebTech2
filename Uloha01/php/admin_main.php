@@ -5,7 +5,8 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +27,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
     <link rel="stylesheet" type="text/css" href="../css/style.css">
 
-    <title><?php echo $language['titleResult']?></title>
+    <title><?php echo $language['titleAdminMain']?></title>
 </head>
 <body>
 
@@ -37,17 +38,17 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
             <li class="nav-item active">
                 <!--<h1 class="text-white"></h1>-->
             </li>
-            <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
-            </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"> <a class="nav-link" id="svk" href="user_results.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
-                <div id="enDiv" ><a class="nav-link" id="eng" href="user_results.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
+                <div id="skDiv"> <a class="nav-link" id="svk" href="admin_main.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
+                <div id="enDiv" ><a class="nav-link" id="eng" href="admin_main.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
@@ -75,71 +76,13 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 <div class="container">
 
     <div id="caption">
-        <h2><?php echo $language['h2result']?></h2>
+        <h2>ADMIN</h2>
         <div class="or-seperator"></div>
     </div>
     <div id="data">
-        <?php
-            // Create connection
-            require('config.php');
-            $conn = new mysqli($hostname, $username, $password, $dbname,4171);
-            $conn->set_charset("utf8");
-
-            // Check connection
-            if ($conn->connect_error) {
-
-              die("Connection failed: " . $conn->connect_error);
-            }
-            $id = $_SESSION['id'];
-            $sql = "SELECT Predmet from Predmety WHERE id_student = $id ";
-            $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-
-                echo "<h3 style='margin-bottom: 20px'>".$row['Predmet']."</h3>";
 
 
-                $subject = $row['Predmet'];
 
-                $sql = "SHOW columns FROM $subject";
-                $result2 = mysqli_query($conn,$sql);
-
-                echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
-                            <thead >
-                                <tr class=\"color-black text-white\">";
-
-                while($row2 = mysqli_fetch_array($result2)){
-                    if($row2['Field'] != 'Meno' && $row2['Field'] != 'id' && $row2['Field'] != 'Rok')
-                    echo "<th scope=col>".$row2['Field']."</th>";
-                }
-
-
-                $sql = "SELECT * from $subject  WHERE id = $id ";
-                $result3 = $conn->query($sql);
-
-                if ($result3->num_rows > 0) {
-
-                    echo "
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>";
-
-
-                    while($row3 = $result3->fetch_assoc()) {
-
-                        echo "<th>".$row3['Cvicenie']."</th>";
-                        echo "<th>".$row3['Znamka']."</th>";
-                    }
-
-                    echo "</tr>
-                            </tbody>
-                          </table>";
-                }
-            }
-        }
-        ?>
 
     </div>
 

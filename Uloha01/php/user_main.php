@@ -6,6 +6,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else{$language = include('../lang/svk.php');}
 
 if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+
 ?>
 
 <!DOCTYPE html>
@@ -38,10 +39,10 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 <!--<h1 class="text-white"></h1>-->
             </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/Uloha01/php/user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+                <a class="nav-link" href="user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/Uloha01/php/user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -66,7 +67,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 ?>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['logout']?></a>
+                <a class="nav-link" id="logout" href="../../Login/php/logout.php?lang=<?php echo $language['websiteLang'];?>"><?php echo $language['logout']?></a>
             </li>
         </ul>
     </nav>

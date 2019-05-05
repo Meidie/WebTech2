@@ -13,6 +13,8 @@ return array(
     'email2' => 'University e-mail',
     'h2result' => 'Evaluation of subjects',
     'titleResult' => 'Subject results',
-    'logout' => 'Log Out'
+    'logout' => 'Log Out',
+    'titleAdminMain' => "Admin profile",
+    'h2AdminResults' => 'New evaluation'
 )
 ?>

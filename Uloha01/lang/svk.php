@@ -13,7 +13,9 @@ return array(
     'email2' => 'Univerzitný e-mail',
     'h2result' => 'Hodnotenie predmetov',
     'titleResult' => 'Výsledky predmetov',
-    'logout' => 'Odhlásiť'
+    'logout' => 'Odhlásiť',
+    'titleAdminMain' => 'Profil administrátora',
+    'h2AdminResults' => 'Nové hodnotenie'
 )
 
 ?>
