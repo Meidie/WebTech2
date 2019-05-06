@@ -12,6 +12,12 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
     echo $select;
 }*/
 
+if(isset($_GET['msg'])){
+
+    //success,createFailed,noSubmitData,wrongFile,wrongSize,connectionFailed
+    $_GET['msg'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -86,7 +92,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
 
         <form>
             <div class="form-check form-check-inline">
-                <input class='form-check-input' type='radio' name='choice' id='add' onchange="change(id)"  <?php if(isset($_POST['submitAdd']) || !isset($_POST['submitCheck'])){ echo 'checked';} ?> >
+                <input class='form-check-input' type='radio' name='choice' id='add' onchange="change(id)"  <?php if(!isset($_POST['submitCheck'])){ echo 'checked';} ?> >
                 <label class="form-check-label" for="add"><?php echo $language['radio1'];?></label>
             </div>
 
@@ -101,7 +107,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
         <div class="alert alert-warning" role="alert" id="alert">
             <?php echo $language['alert'];?>
         </div>
-        <form enctype="multipart/form-data" action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?> >
+        <form enctype="multipart/form-data" action="file.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?> >
             <div class="form-row" >
                 <div class="form-group col-md-6">
                     <label for="inputSubject"><?php echo $language['lSubject'];?></label>
@@ -110,7 +116,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
                 <div class="form-group col-md-4">
                     <label for="inputYear"><?php echo $language['lYear'];?></label>
                     <select class="form-control" id="inputYear" name="year">
-                        <option data-option="">--</option>
+                        <option data-option="">2018/2019</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -121,8 +127,9 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputFile"><?php echo $language['file'];?></label>
-                    <input type="file" id="inputFile"  name="file" style="background-color:#D8D8D8" placeholder="" required>
+
                     <br>
+                    <input type="file" id="inputFile"  name="csvFile"  accept=".csv" style="background-color:#D8D8D8" placeholder="" required>
                     <input type="text" id="fileName" value="" readonly >
                     <button type="button" class="btn color-black text-white" id="uploadButton"><?php echo $language['selectFile'];?></button>
                 </div>
@@ -130,7 +137,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
             <input type="submit" name="submitAdd" value="<?php echo $language['submit1'];?>" class="btn btn-primary mb-2" id="button">
         </form>
 
-        <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(isset($_POST['submitAdd']) || !isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?>>
+        <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(!isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?>>
             <div class="form-row" >
                 <div class="form-group col-md-6">
                     <label for="inputName"><?php echo $language['lSubject'];?></label>

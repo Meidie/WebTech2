@@ -103,7 +103,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 $subject = $row['Predmet'];
 
                 //ziskam nazvy stlpcov v danom predmete
-                $sql = "SHOW columns FROM $subject";
+                $sql = "SHOW columns FROM `$subject`";
                 $result2 = mysqli_query($conn,$sql);
 
 
@@ -115,12 +115,12 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 while($row2 = mysqli_fetch_array($result2)){
 
                     //ak sa stlpec nevola meno alebo rok vypisuje data
-                    if($row2['Field'] != 'Meno' && $row2['Field'] != 'id' && $row2['Field'] != 'Rok')
+                    if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok')
                     echo "<th scope=col>".$row2['Field']."</th>";
                 }
 
                 //ziskam vsetky udaje k danym stlpcom
-                $sql = "SELECT * from $subject  WHERE id = $id ";
+                $sql = "SELECT * from `$subject`  WHERE id = $id ";
                 $result3 = $conn->query($sql);
 
                 if ($result3->num_rows > 0) {
@@ -132,11 +132,22 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                                 <tr>";
 
                     //vypisem udaje do tabulky
-                    while($row3 = $result3->fetch_assoc()) {
+                    $row3 = $result3->fetch_assoc();
+
+                    $loop = 1;
+                    foreach ($row3 as $r){
+
+                        if($loop > 3)
+                            echo "<th>".$r."</th>";
+
+                        $loop++;
+                    }
+
+                    /*while($row3 = $result3->fetch_assoc()) {
 
                         echo "<th>".$row3['Cvicenie']."</th>";
                         echo "<th>".$row3['Znamka']."</th>";
-                    }
+                    }*/
 
                     echo "</tr>
                             </tbody>
