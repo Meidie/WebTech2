@@ -1,4 +1,9 @@
 <?php
+
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
+}else{$language = include('../lang/svk.php');}
+
 /*
  * formular
  * dvojjazycnost
@@ -6,11 +11,10 @@
  */
 
 
-
 ?>
 
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="<?php echo $language['websiteLang']; ?>">
 <head>
     <!-- Required meta tags -->
     <meta charset="UTF-8">
@@ -25,23 +29,43 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
 
 
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
 
     <title>ADMIN</title>
 </head>
+
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark color-black">
+        <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="navbar-item">
+                <div id="skDiv"> <a class="nav-link" id="svk" href="admin.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
+                <div id="enDiv" ><a class="nav-link" id="eng" href="admin.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
+
+            </li>
+            <li class="navbar-item">
+                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['logout']?></a>
+            </li>
+        </ul>
+    </nav>
+
+</header>
+
 <body>
 
 <div class="container">
 
     <form action="" method="post">
 
-        <h2>Pridanie vysledkov</h2>
+        <h2><?php echo $language['formHeader']; ?></h2>
 
         <div class="form-inline">
 
         <div class="form-group ">
 
-            <label for="schoolYear">Skolsky rok</label>
+            <label for="schoolYear"> <?php echo $language['schoolYear']; ?> </label>
             <select class="form-control" id="schoolYear">
                 <option>1</option>
                 <option>2</option>
@@ -54,8 +78,8 @@
 
         <div class="form-group">
 
-            <label for="subject">Nazov predmetu</label>
-            <input type="text" class="form-control" id="subject" placeholder="Nazov predmetu">
+            <label for="subject"><?php echo $language['subjectName']; ?></label>
+            <input type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
 
         </div>
 
@@ -65,18 +89,18 @@
 
         <div class="form-group">
 
-            <label for="resultCSV">CSV subor s vysledkami</label>
+            <label for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="resultCSV" lang="es">
-                <label class="custom-file-label" for="customFileLang">Vyberte subor</label>
+                <label class="custom-file-label" for="customFileLang"><?php echo $language['CSVfilePlaceholder']; ?></label>
             </div>
 
         </div>
 
         <div class="form-group">
 
-            <label for="separator">Oddelovac</label>
+            <label for="separator"><?php echo $language['separator']; ?></label>
             <select class="form-control" id="separator">
                 <option>,</option>
                 <option>;</option>
@@ -88,6 +112,8 @@
 
 
     </form>
+
+    <h2><?php echo $language['teamOverview']; ?></h2>
 
 
 </div>
