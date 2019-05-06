@@ -23,6 +23,17 @@
     </style>
 </head>
 <body>
+<header>
+    <h1 id="tit_load">
+        Načítanie údajov
+    </h1>
+    <nav>
+        <ul class="menu">
+            <li class="menu"><a href="index.php">Upload csv</a></li>
+            <li class="menu"><a href="mailinfo.php">Mail info</a></li>
+        </ul>
+    </nav>
+</header>
 <!--------------------------------------------------------------------
 -----------------------Prve nacitavanie udajov------------------------>
 <div class="container">
