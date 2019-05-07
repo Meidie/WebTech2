@@ -5,7 +5,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']); exit();}
 ?>
 
 <!DOCTYPE html>
@@ -104,20 +104,34 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
                 //ziskam nazvy stlpcov v danom predmete
                 $sql = "SHOW columns FROM `$subject`";
-                $result2 = mysqli_query($conn,$sql);
+
+                $result2 = $conn->query($sql);
+
+                //$result2 = mysqli_query($conn,$sql);
 
 
-                echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
+                if ($result->num_rows > 0) {
+
+                    echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
                             <thead >
                                 <tr class=\"color-black text-white\">";
 
+                    //vytvorim hlavicku tabulky
+                    while($row2 = $result2->fetch_assoc()) {
+
+                        //ak sa stlpec nevola meno alebo rok vypisuje data
+                        if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok')
+                            echo "<th scope=col>".$row2['Field']."</th>";
+                    }
+                }
+
                 //vytvorim hlavicku tabulky
-                while($row2 = mysqli_fetch_array($result2)){
+               /* while($row2 = mysqli_fetch_array($result2)){
 
                     //ak sa stlpec nevola meno alebo rok vypisuje data
                     if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok')
                     echo "<th scope=col>".$row2['Field']."</th>";
-                }
+                }*/
 
                 //ziskam vsetky udaje k danym stlpcom
                 $sql = "SELECT * from `$subject`  WHERE id = $id ";

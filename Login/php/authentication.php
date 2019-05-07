@@ -34,11 +34,17 @@
                         $conn->close();
                         $_SESSION['admin'] = "true";
                         header('Location: ../../Uloha01/php/admin_main.php?lang='.$_GET['lang']);
+                        exit();
                     }else {
                         $_SESSION['login_failed'] = "failed";
 
-                        if (isset($_GET['lang']))
+                        if (isset($_GET['lang'])) {
                             header('Location: ../../index.php?lang=' . $_GET['lang']);
+                            exit();
+                        }else{
+                            header('Location: ../../index.php');
+                            exit();
+                        }
                     }
                 }
 
@@ -82,12 +88,18 @@
                     $_SESSION['mail2'] = ldap_get_values($ldapconn, $entry, "mail")[2];
 
                     header('Location: ../../Uloha01/php/user_main.php?lang=' . $_GET['lang']);
+                    exit();
                 } else {
                     echo "LDAP bind failed...";
                     $_SESSION['login_failed'] = "failed";
 
-                    if (isset($_GET['lang']))
+                    if (isset($_GET['lang'])) {
                         header('Location: ../../index.php?lang=' . $_GET['lang']);
+                        exit();
+                    }else{
+                        header('Location: ../../index.php');
+                        exit();
+                    }
                 }
             }
         }

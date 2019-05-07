@@ -20,15 +20,19 @@ if(isset($_POST['submitAdd'])){
     $separator = $_POST['separator'];
     $file  = $_FILES["csvFile"];
     $name = $subjectName." ".$schoolYear;
+    $idColumn = "";
+    $inputData = array();
+    $inputHeaderData = array();
+    $updated = TRUE;
 
     //zistime ci uz tabulka s danym meno existuje v databaze
     $exist = checkTable($name);
     //ak existuje tabulka v databaze
     if($exist){
         //spocitam kolko ma tabulka stlpcov
-        $cols = countColumns($name);
+       echo $cols = countColumns($name);
         //ziskam header tabulky
-        $header = tableHeader($name);
+       $header = tableHeader($name);
     }
 
     //ziskam koncovku inportnuteho suboru
@@ -36,7 +40,9 @@ if(isset($_POST['submitAdd'])){
 
     //kontrola ci sa jedna o csv subor
     if($fileType != 'csv'){
+        $conn->close();
         header('Location: admin_results.php?msg=wrongFile&lang='.$language['websiteLang']);
+        exit();
     }
 
     //pomocne premenne
@@ -53,13 +59,24 @@ if(isset($_POST['submitAdd'])){
 
     //citanie csv suboru
     if (($handle = fopen( $_FILES["csvFile"]["tmp_name"], "r")) !== FALSE) {
+
+        $added = TRUE;
+
         while (($data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
 
-            $num = count($data);  //pocet stlpcov
+            echo $num = count($data);  //pocet stlpcov
+
+            if($num == 1 && $num != $cols){
+                $conn->close();
+                header('Location: admin_results.php?msg=wrongSeparator&lang='.$language['websiteLang']);
+                exit();
+            }
 
             //ak nema csv subor rovnaky pocet stlpcov ako uz vytvorena tabulka v databaze
             if($num != $cols && $exist){
+                $conn->close();
                 header('Location: admin_results.php?msg=wrongSize&lang='.$language['websiteLang']);
+                exit();
             }
 
             $size = 0;
@@ -91,18 +108,22 @@ if(isset($_POST['submitAdd'])){
 
                     $col++;
                 }// druhy a kazdy dalsi riadok v csv subore
-                else{
+                else if($row >= 2){
 
                     if($size == 0){
+
                        $sql2Part  = $sql2Part ."'".$data[$c]."'";
                        $id_student = $data[$c];
-
                     }else{
 
                         if($size == 2){
                             $sql2Part = $sql2Part.", '".$schoolYear."', '".$data[$c]."'";
+                            array_push($inputData , $data[$c]);
+
                         }else{
                             $sql2Part = $sql2Part.", '".$data[$c]."'";
+                            array_push($inputData , $data[$c]);
+
                         }
                     }
 
@@ -124,12 +145,44 @@ if(isset($_POST['submitAdd'])){
                 $sql2Part = "";
 
                 if ($conn->query($sql2Call) === TRUE) {
-                    echo "INSERTED";
-                }
 
-                $sql3 = "INSERT INTO `Predmety` (`id`, `id_student`, `Predmet`) VALUES (NULL, '".$id_student."', '".$name."')";
-                if ($conn->query($sql3) === TRUE) {
-                    echo "INSERTED";
+                    $sql3 = "INSERT INTO `Predmety` (`id`, `id_student`, `Predmet`) VALUES (NULL, '".$id_student."', '".$name."')";
+                    if ($conn->query($sql3) === TRUE) {
+                        echo "INSERTED";
+                    }else{
+                        $sql = "DELETE FROM `$name` WHERE `$id` = '$id_student'";
+                        if ($conn->query($sql) === TRUE) {
+                            echo "DELTED";
+                            $added = FALSE;
+                        }
+                    }
+                }else{
+
+                    if(sizeof($inputData) == sizeof($inputHeaderData)){
+
+                        $sqlUpdate = "UPDATE `$name` SET";
+
+                        for($i = 0 ; $i < sizeof($inputHeaderData);$i++){
+
+                            if($i == 0){
+                                $sqlUpdate = $sqlUpdate."`".$inputHeaderData[$i]."` = '".$inputData[$i]."'";
+                            }else{
+                                $sqlUpdate = $sqlUpdate.", `".$inputHeaderData[$i]."` = '".$inputData[$i]."'";
+                            }
+
+                        }
+                        $sqlUpdate = $sqlUpdate." WHERE `$idColumn` = $id_student";
+
+                        if ($conn->query($sqlUpdate) === TRUE) {
+                            $updated = TRUE;
+                            echo "Record updated successfully";
+                        } else {
+                            $updated = FAlSE;
+                            echo "Error updating record: " . $conn->error;
+                        }
+                    }
+
+                    $inputData = array();
                 }
             }
 
@@ -137,15 +190,33 @@ if(isset($_POST['submitAdd'])){
         }
 
         fclose($handle);
+    }else{
+
+        $conn->close();
+        header('Location: admin_results.php?msg=unableToOpen&lang='.$language['websiteLang']);
+        exit();
     }
 
-    $conn->close();
-    header('Location: admin_results.php?msg=success&lang='.$language['websiteLang']);
+    if(!$added && !$updated){
+
+        $conn->close();
+        header('Location: admin_results.php?msg=unsuccessful&lang='.$language['websiteLang']);
+        exit();
+
+
+    }else if($added){
+
+        $conn->close();
+        header('Location: admin_results.php?msg=success&lang='.$language['websiteLang']);
+        exit();
+    }
+
 }else{
 
+    $conn->close();
     header('Location: admin_results.php?msg=noSubmitData&lang='.$language['websiteLang']);
+    exit();
 }
-
 
 function createTable($sql){
 
@@ -157,6 +228,7 @@ function createTable($sql){
     } else {
         echo "Error creating table: " . $conn->error;
         header('Location: admin_results.php?msg=createFailed&lang='.$language['websiteLang']);
+        exit();
     }
 }
 
@@ -166,11 +238,15 @@ function countColumns($name){
     $count = 0;
 
     $sql = "SHOW columns FROM `$name`";
-    $result = mysqli_query($conn,$sql);
 
-    while($row = mysqli_fetch_array($result)){
+    $result = $conn->query($sql);
 
-        $count++;
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+            $count++;
+        }
     }
 
     return $count-1;
@@ -196,18 +272,31 @@ function checkTable($name){
 function tableHeader($name){
 
     global $conn;
+    global $idColumn;
+    global $inputHeaderData;
+
     $header = "";
     $count = 0;
 
     $sql = "SHOW columns FROM `$name`";
-    $result = mysqli_query($conn,$sql);
 
-    while($row = mysqli_fetch_array($result)){
-        if($count == 0){
-            $header = $header."`".$row['Field']."`";
-            $count++;
-        }else{
-            $header = $header.", `".$row['Field']."`";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+
+            if($count == 0){
+                $idColumn = $row['Field'];
+                $header = $header."`".$row['Field']."`";
+                $count++;
+            }else{
+                $header = $header.", `".$row['Field']."`";
+
+                if($row['Field'] != 'rok'){
+                    array_push($inputHeaderData , $row['Field']);
+                }
+            }
         }
     }
 

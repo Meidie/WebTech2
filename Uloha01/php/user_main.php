@@ -5,7 +5,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 ?>
 

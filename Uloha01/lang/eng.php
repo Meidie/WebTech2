@@ -15,7 +15,7 @@ return array(
     'titleResult' => 'Subject results',
     'logout' => 'Log Out',
     'titleAdminMain' => "Admin profile",
-    'h2AdminResults' => 'New evaluation',
+    'h2AdminResults' => 'Evaluation',
     'radio1' => 'Add new data',
     'radio2' => 'Check subjects',
     'lSubject' => 'Subject name',
@@ -28,6 +28,16 @@ return array(
     'submit2' => 'Show data',
     'selectFile' => 'Select file',
     'alert' => 'In order to ensure bilingualism of data on page please insert data in both languages. <br> => Slovak word,English word  (as a separator use a comma)',
+    'success' => 'Data added successfully',
+    'createFailed' => 'Could not create the table',
+    'noSubmitData' => 'No data were submitted',
+    'wrongFile' => 'Only CSV files are supported',
+    'wrongSize' => 'The file has more columns than the table',
+    'connectionFailed' => 'Unable to connect to the database',
+    'wrongSeparator' => 'Wrong separator',
+    'unableToOpen' => 'Unable to open the file',
+    'unsuccessful' => 'Failed to add data',
+    'noData' => 'No data'
    // 'array' => array("Volvo",22,18)
 )
 ?>

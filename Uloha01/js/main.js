@@ -8,12 +8,21 @@ function change(id) {
         $("#showForm").hide();
         $("#table").empty();
         $("#alert").show();
+
     }else if(id === 'show'){
 
         $("#addForm").hide();
         $("#showForm").show();
         $("#table").empty();
         $("#alert").hide();
+        $("#success").hide();
+        $("#createFailed").hide();
+        $("#noSubmitData").hide();
+        $("#wrongFile").hide();
+        $("#wrongSize").hide();
+        $("#connectionFailed").hide();
+        $("#wrongSeparator").hide();
+        $("#unableToOpen").hide();
     }
 }
 

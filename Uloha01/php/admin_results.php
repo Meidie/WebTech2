@@ -5,7 +5,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']); exit();}
 
 //pre select
 /*foreach ($language['array'] as $select){
@@ -14,8 +14,26 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
 
 if(isset($_GET['msg'])){
 
-    //success,createFailed,noSubmitData,wrongFile,wrongSize,connectionFailed
-    $_GET['msg'];
+    switch ($_GET['msq']){
+        case 'success':
+            echo "<div class='alert alert-success' role='alert'>This is a success alert—check it out!</div>";
+            break;
+        case 'createFailed':
+            echo "<div class='alert alert-danger' role='alert'>This is a danger alert—check it out!</div>";
+            break;
+        case 'noSubmitData':
+            echo "<div class='alert alert-warning' role='alert'>This is a warning alert—check it out!</div>";
+            break;
+        case 'wrongFile':
+            echo "<div class='alert alert-info' role='alert'>This is a info alert—check it out!</div>";
+            break;
+        case 'wrongSize';
+            echo "<div class='alert alert-info' role='alert'>This is a info alert—check it out!</div>";
+            break;
+        case 'connectionFailed':
+            echo "<div class='alert alert-danger' role='alert'>This is a danger alert—check it out!</div>";
+            break;
+    }
 }
 
 ?>
@@ -104,9 +122,44 @@ if(isset($_GET['msg'])){
     </div>
     <div id="data">
 
-        <div class="alert alert-warning" role="alert" id="alert">
-            <?php echo $language['alert'];?>
-        </div>
+
+        <?php
+        if(isset($_GET['msg'])){
+
+            $result = $_GET['msg'];
+
+            switch ($result){
+                case 'success':
+                    echo "<div class='alert alert-success' id='success' role='alert'>".$language['success']."</div>";
+                    break;
+                case 'createFailed':
+                    echo "<div class='alert alert-danger' id='createFailed' role='alert'>".$language['createFailed']."</div>";
+                    break;
+                case 'noSubmitData':
+                    echo "<div class='alert alert-warning' id='noSubmitData' role='alert'>".$language['noSubmitData']."</div>";
+                    break;
+                case 'wrongFile':
+                    echo "<div class='alert alert-info' id='wrongFile' role='alert'>".$language['wrongFile']."</div>";
+                    break;
+                case 'wrongSize';
+                    echo "<div class='alert alert-info' id='wrongSize' role='alert'>".$language['wrongSize']."</div>";
+                    break;
+                case 'connectionFailed':
+                    echo "<div class='alert alert-danger' id='connectionFailed' role='alert'>".$language['connectionFailed']."</div>";
+                    break;
+                case 'wrongSeparator':
+                    echo "<div class='alert alert-warning' id='wrongSeparator' role='alert'>".$language['wrongSeparator']."</div>";
+                    break;
+                case 'unableToOpen':
+                    echo "<div class='alert alert-danger' id='unableToOpen' role='alert'>".$language['unableToOpen']."</div>";
+                    break;
+                case 'unsuccessful':
+                    echo "<div class='alert alert-danger' id='unableToOpen' role='alert'>".$language['unsuccessful']."</div>";
+                    break;
+            }
+        }
+        ?>
+        <div class='alert alert-warning' role='alert' id='alert' <?php  if (isset($_POST['submitCheck'])) echo 'style="display: none"';?> ><?php echo $language['alert'];?></div>
         <form enctype="multipart/form-data" action="file.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?> >
             <div class="form-row" >
                 <div class="form-group col-md-6">
@@ -116,7 +169,17 @@ if(isset($_GET['msg'])){
                 <div class="form-group col-md-4">
                     <label for="inputYear"><?php echo $language['lYear'];?></label>
                     <select class="form-control" id="inputYear" name="year">
-                        <option data-option="">2018/2019</option>
+                        <?php
+                        $startYear = date("Y", 1420070400); //2015
+                        $currentYear = date("Y");
+                        $tmpYear = $currentYear;
+
+                        while ($startYear < $tmpYear){
+
+                            echo  " <option>".($tmpYear-1)."/".$tmpYear."</option>";
+                            $tmpYear--;
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -140,35 +203,108 @@ if(isset($_GET['msg'])){
         <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(!isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?>>
             <div class="form-row" >
                 <div class="form-group col-md-6">
-                    <label for="inputName"><?php echo $language['lSubject'];?></label>
-                    <input type="text" class="form-control" id="inputSubject" name="name" placeholder="<?php  if(isset($_POST['submitCheck'])){echo $_POST['name'];}else{echo $language['phSubject']; }?>" required>
+                    <label for="inputSubject"><?php echo $language['lSubject'];?></label>
+                    <select class="form-control" id="inputSubject" name="name">
+                        <?php
+
+                            require('config.php');
+                            $conn = new mysqli($hostname, $username, $password, $dbname,4171);
+                            if ($conn->connect_error) {
+                                header('Location: admin_results.php?msg=connectionFailed&lang='.$language['websiteLang']);
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+
+                            $sql = "SELECT Predmet FROM `Predmety` GROUP BY `Predmet`";
+                            $result = $conn->query($sql);
+                            if ($result->num_rows > 0) {
+                                while($row = $result->fetch_assoc()) {
+
+                                    $option = explode('/',$row['Predmet']);
+                                    $option = substr($option[0],0,strlen($option[0])-5);
+                                     echo "<option>".$option."</option>";
+                                }
+                            }
+                        ?>
+
+                    </select>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputYear"><?php echo $language['lYear'];?></label>
                     <select class="form-control" id="inputYear" name="year">
-                        <option data-option="">--</option>
+                        <?php
+                            $startYear = date("Y", 1420070400); //2015
+                            $currentYear = date("Y");
+                            $tmpYear = $currentYear;
+
+                            while ($startYear < $tmpYear){
+
+                                echo  " <option>".($tmpYear-1)."/".$tmpYear."</option>";
+                                $tmpYear--;
+                            }
+                        ?>
                     </select>
                 </div>
             </div>
             <input type="submit" name="submitCheck" value="<?php echo $language['submit2'];?>" class="btn btn-primary mb-2" id="submitCheck">
+            <input type="submit" name="submitDelete" value="DELETE" class="btn btn-danger mb-2" id="submitCheck">
         </form>
 
         <div id="table">
-
-
             <?php
 
-
-
             if(isset($_POST['submitCheck'])){
-                echo $_POST['name'];
-                echo $_POST['year'];
-            }
-            else if(isset($_POST['submitAdd'])){
-                echo $_POST['subject'];
-                echo $_POST['year'];
-                echo $_POST['separator'];
-                echo $_POST['file'];
+
+                $subject = $_POST['name'];
+                $year = $_POST['year'];
+                $subjectName = $subject." ".$year;
+
+
+                $sql = "SHOW columns FROM `$subjectName`";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+
+                    echo "<table class=\"table table-striped table-bordered text-center\" >
+                            <thead><tr class=\"color-black text-white\">";
+
+                    while($row = $result->fetch_assoc()) {
+
+                        if($row['Field'] != 'rok')
+                            echo "<th scope=col>".$row['Field']."</th>";
+                    }
+                }
+
+                $sql = "SELECT * FROM `$subjectName`";
+
+
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+
+                    echo "</tr></thead><tbody>";
+
+                    while($row = $result->fetch_assoc()) {
+                       echo "<tr>";
+                       $count = 1;
+                       foreach ($row as $col){
+
+                           if($count !=3)
+                             echo "<th>".$col."</th>";
+                           $count++;
+
+                       }
+                       echo "</tr>";
+                    }
+
+                    echo "</tbody>
+                          </table>";
+                }
+                else{
+                    echo "<div style='text-align: center'>";
+                    echo $language['noData'];
+                    echo "</div>";
+                }
+
+                $conn->close();
             }
             ?>
         </div>
