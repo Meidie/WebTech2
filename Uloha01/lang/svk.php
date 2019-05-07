@@ -37,7 +37,9 @@ return array(
     'wrongSeparator' => 'Nesprávny oddeľovač',
     'unableToOpen' => 'Súbor sa nepodarilo otvoriť',
     'unsuccessful' => 'Nepodarilo sa pridať údaje',
-    'noData' => 'Žiadne dáta'
+    'noData' => 'Žiadne dáta',
+    'dataDelete' => 'Predmet bol odstránený',
+    'notDeleted' => 'Predmet sa nepodarilo odstrániť'
     //'array' => array("Volvo",22,18)
 )
 

@@ -37,7 +37,9 @@ return array(
     'wrongSeparator' => 'Wrong separator',
     'unableToOpen' => 'Unable to open the file',
     'unsuccessful' => 'Failed to add data',
-    'noData' => 'No data'
+    'noData' => 'No data',
+    'dataDelete' => 'Subject deleted',
+    'notDeleted' => 'Unable to delete subject'
    // 'array' => array("Volvo",22,18)
 )
 ?>

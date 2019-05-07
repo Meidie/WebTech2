@@ -12,28 +12,43 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
     echo $select;
 }*/
 
-if(isset($_GET['msg'])){
+$deleted = FALSE;
 
-    switch ($_GET['msq']){
-        case 'success':
-            echo "<div class='alert alert-success' role='alert'>This is a success alert—check it out!</div>";
-            break;
-        case 'createFailed':
-            echo "<div class='alert alert-danger' role='alert'>This is a danger alert—check it out!</div>";
-            break;
-        case 'noSubmitData':
-            echo "<div class='alert alert-warning' role='alert'>This is a warning alert—check it out!</div>";
-            break;
-        case 'wrongFile':
-            echo "<div class='alert alert-info' role='alert'>This is a info alert—check it out!</div>";
-            break;
-        case 'wrongSize';
-            echo "<div class='alert alert-info' role='alert'>This is a info alert—check it out!</div>";
-            break;
-        case 'connectionFailed':
-            echo "<div class='alert alert-danger' role='alert'>This is a danger alert—check it out!</div>";
-            break;
+if(isset($_POST['submitCheck'])){
+    $subject = $_POST['name'];
+    $year = $_POST['year'];
+    $subjectName = $subject." ".$year;
+}
+
+if(isset($_POST['submitDelete'])){
+
+    require('config.php');
+    $conn = new mysqli($hostname, $username, $password, $dbname,4171);
+    if ($conn->connect_error) {
+        header('Location: admin_results.php?msg=connectionFailed&lang='.$language['websiteLang']);
+        die("Connection failed: " . $conn->connect_error);
     }
+
+    $subject = $_POST['name'];
+    $year = $_POST['year'];
+    $subjectName = $subject." ".$year;
+
+    $sql = "DROP TABLE `$subjectName`";
+    if($conn->query($sql) === TRUE){
+
+        $sql = "DELETE FROM `Predmety` WHERE `Predmet` = '$subjectName'";
+        if($conn->query($sql) === TRUE){
+
+            $deleted = TRUE;
+        }else{
+
+            $deleted = FALSE;
+        }
+    }else{
+        $deleted = FALSE;
+    }
+
+    $conn->close();
 }
 
 ?>
@@ -110,12 +125,12 @@ if(isset($_GET['msg'])){
 
         <form>
             <div class="form-check form-check-inline">
-                <input class='form-check-input' type='radio' name='choice' id='add' onchange="change(id)"  <?php if(!isset($_POST['submitCheck'])){ echo 'checked';} ?> >
+                <input class='form-check-input' type='radio' name='choice' id='add' onchange="change(id)"  <?php if(!isset($_POST['submitCheck']) && !isset($_POST['submitDelete'])){ echo 'checked';} ?> >
                 <label class="form-check-label" for="add"><?php echo $language['radio1'];?></label>
             </div>
 
             <div class="form-check form-check-inline" >
-                <input class='form-check-input' type='radio' name='choice' id='show' onchange="change(id)" <?php if(isset($_POST['submitCheck'])){ echo 'checked';} ?>>
+                <input class='form-check-input' type='radio' name='choice' id='show' onchange="change(id)" <?php if(isset($_POST['submitCheck']) || isset($_POST['submitDelete'])){ echo 'checked';} ?>>
                 <label class='form-check-label' for='show'><?php echo $language['radio2'];?></label>
             </div>
         </form>
@@ -159,8 +174,8 @@ if(isset($_GET['msg'])){
             }
         }
         ?>
-        <div class='alert alert-warning' role='alert' id='alert' <?php  if (isset($_POST['submitCheck'])) echo 'style="display: none"';?> ><?php echo $language['alert'];?></div>
-        <form enctype="multipart/form-data" action="file.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?> >
+        <div class='alert alert-warning' role='alert' id='alert' <?php  if (isset($_POST['submitCheck'])|| isset($_POST['submitDelete'])) echo 'style="display: none"';?> ><?php echo $language['alert'];?></div>
+        <form enctype="multipart/form-data" action="file.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck']) || isset($_POST['submitDelete'])){ echo 'style="display: none"';} ?> >
             <div class="form-row" >
                 <div class="form-group col-md-6">
                     <label for="inputSubject"><?php echo $language['lSubject'];?></label>
@@ -200,7 +215,7 @@ if(isset($_GET['msg'])){
             <input type="submit" name="submitAdd" value="<?php echo $language['submit1'];?>" class="btn btn-primary mb-2" id="button">
         </form>
 
-        <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(!isset($_POST['submitCheck'])){ echo 'style="display: none"';} ?>>
+        <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(!isset($_POST['submitCheck']) && !isset($_POST['submitDelete'])){ echo 'style="display: none"';} ?>>
             <div class="form-row" >
                 <div class="form-group col-md-6">
                     <label for="inputSubject"><?php echo $language['lSubject'];?></label>
@@ -217,12 +232,29 @@ if(isset($_GET['msg'])){
                             $sql = "SELECT Predmet FROM `Predmety` GROUP BY `Predmet`";
                             $result = $conn->query($sql);
                             if ($result->num_rows > 0) {
+
+                                $results = array();
+
                                 while($row = $result->fetch_assoc()) {
 
                                     $option = explode('/',$row['Predmet']);
                                     $option = substr($option[0],0,strlen($option[0])-5);
-                                     echo "<option>".$option."</option>";
+
+                                    if(!in_array($option,$results)) {
+                                        array_push($results,$option);
+                                    }
                                 }
+
+                                foreach ($results as $options){
+
+                                    if ($options == $subject)
+                                        echo "<option selected>" . $options . "</option>";
+                                    else
+                                        echo "<option>" . $options . "</option>";
+
+                                }
+
+                                $results = array();
                             }
                         ?>
 
@@ -238,7 +270,11 @@ if(isset($_GET['msg'])){
 
                             while ($startYear < $tmpYear){
 
-                                echo  " <option>".($tmpYear-1)."/".$tmpYear."</option>";
+                                $fullYear = ($tmpYear-1)."/".$tmpYear;
+                                if($fullYear == $year)
+                                    echo  " <option selected>".($tmpYear-1)."/".$tmpYear."</option>";
+                                else
+                                    echo  " <option>".($tmpYear-1)."/".$tmpYear."</option>";
                                 $tmpYear--;
                             }
                         ?>
@@ -251,6 +287,20 @@ if(isset($_GET['msg'])){
 
         <div id="table">
             <?php
+
+            if(isset($_POST['submitDelete'])){
+
+                if ($deleted){
+                    echo "<div style='text-align: center'>";
+                    echo $language['dataDelete'];
+                    echo "</div>";
+                }else{
+                    echo "<div style='text-align: center'>";
+                    echo $language['notDeleted'];
+                    echo "</div>";
+                }
+            }
+
 
             if(isset($_POST['submitCheck'])){
 
