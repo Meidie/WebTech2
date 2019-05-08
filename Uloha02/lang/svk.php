@@ -2,6 +2,7 @@
 
 return array(
     'websiteLang' => 'sk',
+    'logout' => 'Odhlásenie',
     'titleMain' => 'Profil užívateľa',
     'formHeader' => 'Pridanie výsledkov',
     'schoolYear' => 'Školský rok',

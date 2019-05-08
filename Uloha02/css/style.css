@@ -1,7 +1,15 @@
 /* ADMIN PAGE */
 :lang(en) > q { quotes: '\201C' '\201D' '\2018' '\2019'; }
 
+.form-group{margin: 10px}
+
 .form-control{margin: 10px}
+
+
+
+#separatorDiv{
+    margin-left: 20px;
+}
 /*
 $custom-file-text: (
 en: "Browse",
@@ -9,8 +17,19 @@ es: "Elegir"
 );
  */
 
+#addResults{
+    background-color: #9149F3;
+}
+
+#subject{
+    position: relative;
+    float: right;
+}
 
 
+
+
+/* ----------------------- */
 body {
     color: #fff;
     background: #3598dc;

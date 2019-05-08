@@ -2,6 +2,7 @@
 
 return array(
     'websiteLang' => 'en',
+    'logout' => 'Logout',
     'titleMain' => 'User profile',
     'formHeader' => 'Adding the results',
     'schoolYear' => 'School year',

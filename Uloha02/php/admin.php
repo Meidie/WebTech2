@@ -5,9 +5,10 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else{$language = include('../lang/svk.php');}
 
 /*
- * formular
- * dvojjazycnost
+
  * vypis studentov
+ * js name of file after chosing
+ * school year - moznosti vygenerovane by php date
  */
 
 
@@ -46,7 +47,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['logout']?></a>
+                <a class="nav-link" id="logout" href="logout.php"><?php echo  $language['logout']?></a>
             </li>
         </ul>
     </nav>
@@ -57,7 +58,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
 <div class="container">
 
-    <form action="" method="post">
+    <form action="csvIntoDatabase.php" method="post" id="addResults" enctype="multipart/form-data">
 
         <h2><?php echo $language['formHeader']; ?></h2>
 
@@ -66,12 +67,9 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
         <div class="form-group ">
 
             <label for="schoolYear"> <?php echo $language['schoolYear']; ?> </label>
-            <select class="form-control" id="schoolYear">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
+            <select name="schoolYear" class="form-control" id="schoolYear">
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
             </select>
 
         </div>
@@ -79,7 +77,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
         <div class="form-group">
 
             <label for="subject"><?php echo $language['subjectName']; ?></label>
-            <input type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
+            <input name="subject" type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
 
         </div>
 
@@ -92,23 +90,29 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
             <label for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
-                <input type="file" class="custom-file-input" id="resultCSV" lang="es">
-                <label class="custom-file-label" for="customFileLang"><?php echo $language['CSVfilePlaceholder']; ?></label>
+                <input name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="es">
+                <label class="custom-file-label" for="resultCSV"><?php echo $language['CSVfilePlaceholder']; ?></label>
             </div>
 
         </div>
 
-        <div class="form-group">
+
+            <div class="form-group" id="separatorDiv">
 
             <label for="separator"><?php echo $language['separator']; ?></label>
-            <select class="form-control" id="separator">
-                <option>,</option>
-                <option>;</option>
+            <select name="separator" class="form-control" id="separator">
+                <option value=";">;</option>
+                <option value=",">,</option>
+
             </select>
 
-        </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
 
         </div>
+
+    <input type="hidden" name="permission" value="granted">
 
 
     </form>
