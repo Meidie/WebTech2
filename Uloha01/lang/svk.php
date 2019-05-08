@@ -25,9 +25,8 @@ return array(
     'separator' => 'Oddeľovač',
     'file' => 'CSV súbor',
     'submit1' => 'Pridaj údaje',
-    'submit2' => 'Zobraz údaje',
+    'submit2' => 'Zobraziť údaje',
     'selectFile' => 'Vyberte súbor',
-    'alert' => 'Aby bola zabezpečená dvojjazýčnossť údajov na stránke vkladajte prosím dáta v oboch jazykoch <br> => Slovenské slovo,Anglické slovo (ako oddeľovač použite čiarku)',
     'success' => 'Údaje boli úspešne pridané',
     'createFailed' => 'Nepodarilo sa vytvoriť tabuľku',
     'noSubmitData' => 'No data were submitted',
@@ -41,8 +40,9 @@ return array(
     'dataDelete' => 'Predmet bol odstránený',
     'notDeleted' => 'Predmet sa nepodarilo odstrániť',
     'delete' => 'Odstrániť predmet',
-    'pdf' => 'Stiahnuť ako PDF'
-    //'array' => array("Volvo",22,18)
+    'pdf' => 'Stiahnuť ako PDF',
+    'sum' => 'Spolu',
+    'grade' => 'Známka'
 )
 
 ?>

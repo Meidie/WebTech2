@@ -7,7 +7,6 @@ function change(id) {
         $("#addForm").show();
         $("#showForm").hide();
         $("#table").empty();
-        $("#alert").show();
         $("#pdfLink").hide();
 
     }else if(id === 'show'){
@@ -15,7 +14,6 @@ function change(id) {
         $("#addForm").hide();
         $("#showForm").show();
         $("#table").empty();
-        $("#alert").hide();
         $("#success").hide();
         $("#createFailed").hide();
         $("#noSubmitData").hide();

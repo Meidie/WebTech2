@@ -27,7 +27,6 @@ return array(
     'submit1' => 'Add data',
     'submit2' => 'Show data',
     'selectFile' => 'Select file',
-    'alert' => 'In order to ensure bilingualism of data on page please insert data in both languages. <br> => Slovak word,English word  (as a separator use a comma)',
     'success' => 'Data added successfully',
     'createFailed' => 'Could not create the table',
     'noSubmitData' => 'No data were submitted',
@@ -41,7 +40,8 @@ return array(
     'dataDelete' => 'Subject deleted',
     'notDeleted' => 'Unable to delete subject',
     'delete' => 'Delete subject',
-    'pdf' => 'Download as PDF'
-   // 'array' => array("Volvo",22,18)
+    'pdf' => 'Download as PDF',
+    'sum' => 'Sum',
+    'grade' => 'Grade'
 )
 ?>

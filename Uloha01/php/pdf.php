@@ -1,7 +1,9 @@
 <?php
 
 require('../fpdf/fpdf.php');
-
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
+}else{$language = include('../lang/svk.php');}
 
 if(isset($_GET['lang']) && isset($_GET['subject']) && isset($_GET['year'])){
 
@@ -26,7 +28,19 @@ if(isset($_GET['lang']) && isset($_GET['subject']) && isset($_GET['year'])){
         while($row = $result->fetch_assoc()) {
 
             if( strtolower($row['Field']) != 'rok'){
-                array_push($header,$row['Field']);
+
+                if(strtolower($row['Field']) == 'id')
+                    array_push($header,'ID');
+                else if(strtolower($row['Field']) == 'spolu')
+                    array_push($header,$language['sum']);
+                else if(strtolower($row['Field']) == 'znamka'){
+                    $grade = iconv('UTF-8', 'windows-1252', $language['grade']);
+                    array_push($header,$grade);
+                }
+                else if(strtolower($row['Field']) == 'meno')
+                    array_push($header,$language['name']);
+                else
+                    array_push($header,$row['Field']);
             }
         }
     }

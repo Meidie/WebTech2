@@ -174,16 +174,15 @@ if(isset($_POST['submitDelete'])){
             }
         }
         ?>
-        <div class='alert alert-warning' role='alert' id='alert' <?php  if (isset($_POST['submitCheck'])|| isset($_POST['submitDelete'])) echo 'style="display: none"';?> ><?php echo $language['alert'];?></div>
         <form enctype="multipart/form-data" action="file.php?lang=<?php echo $language['websiteLang'];?>" method="post" id="addForm" <?php if(isset($_POST['submitCheck']) || isset($_POST['submitDelete'])){ echo 'style="display: none"';} ?> >
             <div class="form-row" >
                 <div class="form-group col-md-6">
-                    <label for="inputSubject"><?php echo $language['lSubject'];?></label>
-                    <input type="text" class="form-control" id="inputSubject" name="subject" placeholder="<?php echo $language['phSubject'];?>" required>
+                    <label for="inputSubject1"><?php echo $language['lSubject'];?></label>
+                    <input type="text" class="form-control" id="inputSubject1" name="subject" placeholder="<?php echo $language['phSubject'];?>" required>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputYear"><?php echo $language['lYear'];?></label>
-                    <select class="form-control" id="inputYear" name="year">
+                    <label for="inputYear1"><?php echo $language['lYear'];?></label>
+                    <select class="form-control" id="inputYear1" name="year">
                         <?php
                         $startYear = date("Y", 1420070400); //2015
                         $currentYear = date("Y");
@@ -207,7 +206,7 @@ if(isset($_POST['submitDelete'])){
                     <label for="inputFile"><?php echo $language['file'];?></label>
 
                     <br>
-                    <input type="file" id="inputFile"  name="csvFile"  accept=".csv" style="background-color:#D8D8D8" placeholder="" required>
+                    <input type="file" id="inputFile"  name="csvFile"  accept=".csv" style="background-color:#D8D8D8" required>
                     <input type="text" id="fileName" value="" readonly >
                     <button type="button" class="btn color-black text-white" id="uploadButton"><?php echo $language['selectFile'];?></button>
                 </div>
@@ -218,8 +217,8 @@ if(isset($_POST['submitDelete'])){
         <form enctype="multipart/form-data" method="post"  action="admin_results.php?lang=<?php echo $language['websiteLang'];?>" id="showForm" <?php if(!isset($_POST['submitCheck']) && !isset($_POST['submitDelete'])){ echo 'style="display: none"';} ?>>
             <div class="form-row" >
                 <div class="form-group col-md-6">
-                    <label for="inputSubject"><?php echo $language['lSubject'];?></label>
-                    <select class="form-control" id="inputSubject" name="name">
+                    <label for="inputSubject2"><?php echo $language['lSubject'];?></label>
+                    <select class="form-control" id="inputSubject2" name="name">
                         <?php
 
                             require('config.php');
@@ -261,8 +260,8 @@ if(isset($_POST['submitDelete'])){
                     </select>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputYear"><?php echo $language['lYear'];?></label>
-                    <select class="form-control" id="inputYear" name="year">
+                    <label for="inputYear2"><?php echo $language['lYear'];?></label>
+                    <select class="form-control" id="inputYear2" name="year">
                         <?php
                             $startYear = date("Y", 1420070400); //2015
                             $currentYear = date("Y");
@@ -319,8 +318,19 @@ if(isset($_POST['submitDelete'])){
 
                     while($row = $result->fetch_assoc()) {
 
-                        if($row['Field'] != 'rok')
-                            echo "<th scope=col>".$row['Field']."</th>";
+                        if($row['Field'] != 'rok'){
+
+                                if(strtolower($row['Field']) == 'id')
+                                    echo "<th scope=col>ID</th>";
+                                else if(strtolower($row['Field']) == 'spolu')
+                                    echo "<th scope=col>" . $language['sum'] . "</th>";
+                                else if(strtolower($row['Field']) == 'znamka')
+                                    echo "<th scope=col>" . $language['grade'] . "</th>";
+                                else if(strtolower($row['Field']) == 'meno')
+                                    echo "<th scope=col>" . $language['name'] . "</th>";
+                                else
+                                    echo "<th scope=col>".$row['Field']."</th>";
+                        }
                     }
                 }
 
@@ -337,8 +347,9 @@ if(isset($_POST['submitDelete'])){
                        $count = 1;
                        foreach ($row as $col){
 
-                           if($count !=3)
-                             echo "<th>".$col."</th>";
+                           if($count !=3) {
+                                echo "<th>" . $col . "</th>";
+                           }
                            $count++;
 
                        }
@@ -365,9 +376,6 @@ if(isset($_POST['submitDelete'])){
 
         <a id="pdfLink" <?php if($data == TRUE) echo 'style="display: block"'; ?> href="pdf.php?lang=<?php echo $language['websiteLang']?>&subject=<?php echo $subject?>&year=<?php echo $year ?>" target="_blank"><?php echo $language['pdf'] ?></a>
     </div>
-
-
-
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

@@ -78,7 +78,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
         <h2><?php echo $language['h2result']?></h2>
         <div class="or-seperator"></div>
     </div>
-    <div id="data">
+    <div id="data"  >
         <?php
             // Create connection
             require('config.php');
@@ -112,7 +112,8 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
                 if ($result->num_rows > 0) {
 
-                    echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
+                    echo "<div style=\"overflow-x: auto \">
+                            <table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
                             <thead >
                                 <tr class=\"color-black text-white\">";
 
@@ -120,18 +121,17 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                     while($row2 = $result2->fetch_assoc()) {
 
                         //ak sa stlpec nevola meno alebo rok vypisuje data
-                        if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok')
-                            echo "<th scope=col>".$row2['Field']."</th>";
+                        if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok'){
+
+                            if(strtolower($row2['Field']) == 'spolu')
+                                echo "<th scope=col>" . $language['sum'] . "</th>";
+                            else if(strtolower($row2['Field']) == 'znamka')
+                                echo "<th scope=col>" . $language['grade'] . "</th>";
+                            else
+                                echo "<th scope=col>".$row2['Field']."</th>";
+                        }
                     }
                 }
-
-                //vytvorim hlavicku tabulky
-               /* while($row2 = mysqli_fetch_array($result2)){
-
-                    //ak sa stlpec nevola meno alebo rok vypisuje data
-                    if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok')
-                    echo "<th scope=col>".$row2['Field']."</th>";
-                }*/
 
                 //ziskam vsetky udaje k danym stlpcom
                 $sql = "SELECT * from `$subject`  WHERE id = $id ";
@@ -157,15 +157,9 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                         $loop++;
                     }
 
-                    /*while($row3 = $result3->fetch_assoc()) {
-
-                        echo "<th>".$row3['Cvicenie']."</th>";
-                        echo "<th>".$row3['Znamka']."</th>";
-                    }*/
-
                     echo "</tr>
                             </tbody>
-                          </table>";
+                          </table></div>";
                 }
             }
         }
