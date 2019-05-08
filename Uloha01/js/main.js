@@ -8,6 +8,7 @@ function change(id) {
         $("#showForm").hide();
         $("#table").empty();
         $("#alert").show();
+        $("#pdfLink").hide();
 
     }else if(id === 'show'){
 
@@ -23,8 +24,13 @@ function change(id) {
         $("#connectionFailed").hide();
         $("#wrongSeparator").hide();
         $("#unableToOpen").hide();
+        $("#pdfLink").hide();
     }
 }
+
+$('#submitDelete').click(function () {
+    $("#pdfLink").hide();
+});
 
 $('#uploadButton').click(function () {
     $("input[type='file']").trigger('click');

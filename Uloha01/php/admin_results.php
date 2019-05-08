@@ -282,10 +282,10 @@ if(isset($_POST['submitDelete'])){
                 </div>
             </div>
             <input type="submit" name="submitCheck" value="<?php echo $language['submit2'];?>" class="btn btn-primary mb-2" id="submitCheck">
-            <input type="submit" name="submitDelete" value="<?php echo $language['delete'];?>" class="btn btn-danger mb-2" id="submitCheck">
+            <input type="submit" name="submitDelete" value="<?php echo $language['delete'];?>" class="btn btn-danger mb-2" id="submitDelete">
         </form>
 
-        <div id="table">
+        <div id="table" style="overflow-x: auto ">
             <?php
 
             if(isset($_POST['submitDelete'])){
@@ -314,7 +314,7 @@ if(isset($_POST['submitDelete'])){
 
                 if ($result->num_rows > 0) {
 
-                    echo "<table class=\"table table-striped table-bordered text-center\" >
+                    echo "<table class=\"table table-striped table-bordered text-center\"  >
                             <thead><tr class=\"color-black text-white\">";
 
                     while($row = $result->fetch_assoc()) {
@@ -347,17 +347,23 @@ if(isset($_POST['submitDelete'])){
 
                     echo "</tbody>
                           </table>";
+
+                    $data = TRUE;
+
                 }
                 else{
                     echo "<div style='text-align: center'>";
                     echo $language['noData'];
                     echo "</div>";
+
                 }
 
                 $conn->close();
             }
             ?>
         </div>
+
+        <a id="pdfLink" <?php if($data == TRUE) echo 'style="display: block"'; ?> href="pdf.php?lang=<?php echo $language['websiteLang']?>&subject=<?php echo $subject?>&year=<?php echo $year ?>" target="_blank"><?php echo $language['pdf'] ?></a>
     </div>
 
 

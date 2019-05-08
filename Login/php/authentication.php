@@ -68,12 +68,6 @@
 
             if ($ldapconn) {
 
-               /* $sr =ldap_search($ldapconn, $ldaprdn, "uid=".$ldapuid);
-                $entry = ldap_first_entry($ldapconn, $sr);
-                $aaaa = ldap_get_values($ldapconn,$entry,"uisid");
-                echo $aaaa[0];*/
-
-
                 $ldapbind = ldap_bind($ldapconn, $ldaprdn, $ldappass);
 
                 if ($ldapbind) {
@@ -91,17 +85,14 @@
 
                     header('Location: ../../Uloha01/php/user_main.php?lang=' . $_GET['lang']);
                     exit();
-                }//ak sa nebinde cez zadane heslo skusim heslo vyhldat v databze
+                }//ak sa nebindne cez zadane heslo skusim heslo vyhldat v databze
                 else {
 
                      $sr =ldap_search($ldapconn, $ldaprdn, "uid=".$ldapuid);
                      $entry = ldap_first_entry($ldapconn, $sr);
 
-
                     $idCode = ldap_get_values($ldapconn,$entry,"uisid")[0];
 
-
-                    // Create connection
                      require('config.php');
                      $conn = new mysqli($hostname, $username, $password, $dbname2,4171);
                      $conn->set_charset("utf8");

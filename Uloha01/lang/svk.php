@@ -40,7 +40,8 @@ return array(
     'noData' => 'Žiadne dáta',
     'dataDelete' => 'Predmet bol odstránený',
     'notDeleted' => 'Predmet sa nepodarilo odstrániť',
-    'delete' => 'Odstrániť predmet'
+    'delete' => 'Odstrániť predmet',
+    'pdf' => 'Stiahnuť ako PDF'
     //'array' => array("Volvo",22,18)
 )
 

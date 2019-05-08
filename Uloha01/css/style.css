@@ -151,4 +151,9 @@ input[type='file'] {
 #uploadButton:hover{
     background-color: #424242;
 }
+#pdfLink{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: none;
+}
 
