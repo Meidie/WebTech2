@@ -39,7 +39,8 @@ return array(
     'unsuccessful' => 'Nepodarilo sa pridať údaje',
     'noData' => 'Žiadne dáta',
     'dataDelete' => 'Predmet bol odstránený',
-    'notDeleted' => 'Predmet sa nepodarilo odstrániť'
+    'notDeleted' => 'Predmet sa nepodarilo odstrániť',
+    'delete' => 'Odstrániť predmet'
     //'array' => array("Volvo",22,18)
 )
 

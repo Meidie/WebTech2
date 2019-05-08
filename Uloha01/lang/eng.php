@@ -39,7 +39,8 @@ return array(
     'unsuccessful' => 'Failed to add data',
     'noData' => 'No data',
     'dataDelete' => 'Subject deleted',
-    'notDeleted' => 'Unable to delete subject'
+    'notDeleted' => 'Unable to delete subject',
+    'delete' => 'Delete subject'
    // 'array' => array("Volvo",22,18)
 )
 ?>

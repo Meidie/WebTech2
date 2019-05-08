@@ -282,7 +282,7 @@ if(isset($_POST['submitDelete'])){
                 </div>
             </div>
             <input type="submit" name="submitCheck" value="<?php echo $language['submit2'];?>" class="btn btn-primary mb-2" id="submitCheck">
-            <input type="submit" name="submitDelete" value="DELETE" class="btn btn-danger mb-2" id="submitCheck">
+            <input type="submit" name="submitDelete" value="<?php echo $language['delete'];?>" class="btn btn-danger mb-2" id="submitCheck">
         </form>
 
         <div id="table">
