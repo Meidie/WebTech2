@@ -1,6 +1,5 @@
 
 function change(id) {
-    console.log(id);
 
     if(id === 'add'){
 

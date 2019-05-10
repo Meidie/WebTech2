@@ -1,5 +1,6 @@
 <?php
 
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
@@ -30,7 +31,7 @@ if(isset($_POST['submitAdd'])){
     //ak existuje tabulka v databaze
     if($exist){
         //spocitam kolko ma tabulka stlpcov
-       echo $cols = countColumns($name);
+       $cols = countColumns($name);
         //ziskam header tabulky
        $header = tableHeader($name);
     }
@@ -64,7 +65,7 @@ if(isset($_POST['submitAdd'])){
 
         while (($data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
 
-            echo $num = count($data);  //pocet stlpcov
+           $num = count($data);  //pocet stlpcov
 
             if($num == 1 && $num != $cols){
                 $conn->close();
@@ -84,7 +85,7 @@ if(isset($_POST['submitAdd'])){
             //prechadzam vsetky stlpce v riadku
             for ($c=0; $c < $num; $c++) {
 
-                //ak sme na prvom riadku a tabulka este neexistuje bude ju chciet vytvorit
+                //ak sme na prvom riadku a tabulka este neexistuje budeme ju chciet vytvorit
                 if($row == 1 && !$exist){
 
                     //ak je prvy stlpec
@@ -107,7 +108,7 @@ if(isset($_POST['submitAdd'])){
                     }
 
                     $col++;
-                }// druhy a kazdy dalsi riadok v csv subore
+                }//druhy a kazdy dalsi riadok v csv subore
                 else if($row >= 2){
 
                     if($size == 0){
@@ -149,7 +150,7 @@ if(isset($_POST['submitAdd'])){
                     $sql3 = "INSERT INTO `Predmety` (`id`, `id_student`, `Predmet`) VALUES (NULL, '".$id_student."', '".$name."')";
                     if ($conn->query($sql3) === TRUE) {
                         echo "INSERTED";
-                    }else{
+                    }else{//ak nastane chyba pri pridavani tabulku vymazem
                         $sql = "DELETE FROM `$name` WHERE `$id` = '$id_student'";
                         if ($conn->query($sql) === TRUE) {
                             echo "DELTED";
@@ -158,6 +159,7 @@ if(isset($_POST['submitAdd'])){
                     }
                 }else{
 
+                    //ak sa v tabulke udaj s rovnakym PK uz nachadza udpdatneme data
                     if(sizeof($inputData) == sizeof($inputHeaderData)){
 
                         $sqlUpdate = "UPDATE `$name` SET";
@@ -169,7 +171,6 @@ if(isset($_POST['submitAdd'])){
                             }else{
                                 $sqlUpdate = $sqlUpdate.", `".$inputHeaderData[$i]."` = '".$inputData[$i]."'";
                             }
-
                         }
                         $sqlUpdate = $sqlUpdate." WHERE `$idColumn` = $id_student";
 
@@ -190,20 +191,21 @@ if(isset($_POST['submitAdd'])){
         }
 
         fclose($handle);
-    }else{
+    }else{//ak sa nepodari citat csv subor
 
         $conn->close();
         header('Location: admin_results.php?msg=unableToOpen&lang='.$language['websiteLang']);
         exit();
     }
 
+    //ak zlyha pridanie dat alebo update
     if(!$added && !$updated){
 
         $conn->close();
         header('Location: admin_results.php?msg=unsuccessful&lang='.$language['websiteLang']);
         exit();
 
-
+     //ak vsetko prebehne bez problemov
     }else if($added){
 
         $conn->close();
@@ -218,6 +220,7 @@ if(isset($_POST['submitAdd'])){
     exit();
 }
 
+//funkcia an vytvorenie tabulky
 function createTable($sql){
 
     global $conn;
@@ -232,6 +235,7 @@ function createTable($sql){
     }
 }
 
+//funkcia na spocitanie stlpcov
 function countColumns($name){
 
     global $conn;
@@ -252,6 +256,7 @@ function countColumns($name){
     return $count-1;
 }
 
+//funkcia na zistenie ci tabulka existuje
 function checkTable($name){
 
     global $conn;
@@ -269,6 +274,7 @@ function checkTable($name){
     return null;
 }
 
+//funkcia na ziskanie vsetkych nazvov stlpcov z tabulky
 function tableHeader($name){
 
     global $conn;

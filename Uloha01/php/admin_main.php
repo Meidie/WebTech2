@@ -1,10 +1,13 @@
 
 <?php
 session_start();
+
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
+//kontrola prihlasenia
 if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 ?>
@@ -51,6 +54,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
                 <div id="enDiv" ><a class="nav-link" id="eng" href="admin_main.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
+                //vykreslenie spravnej vlajky
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
 
                     echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
@@ -80,9 +84,6 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
         <div class="or-seperator"></div>
     </div>
     <div id="data">
-
-
-
 
     </div>
 

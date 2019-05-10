@@ -1,25 +1,25 @@
 
 <?php
 session_start();
+
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
+//kontrola prihlasenia
 if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']); exit();}
-
-//pre select
-/*foreach ($language['array'] as $select){
-    echo $select;
-}*/
 
 $deleted = FALSE;
 
+//zobrazenie udajov
 if(isset($_POST['submitCheck'])){
     $subject = $_POST['name'];
     $year = $_POST['year'];
     $subjectName = $subject." ".$year;
 }
 
+//vymazanie predmetu
 if(isset($_POST['submitDelete'])){
 
     require('config.php');
@@ -95,6 +95,7 @@ if(isset($_POST['submitDelete'])){
                 <div id="enDiv" ><a class="nav-link" id="eng" href="admin_results.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
+                //vykreslenie spravnej vlajky
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
 
                     echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
@@ -139,6 +140,8 @@ if(isset($_POST['submitDelete'])){
 
 
         <?php
+
+        //informacia o uspesnosti/neuspesnocti uploadu dat z csv suboru
         if(isset($_GET['msg'])){
 
             $result = $_GET['msg'];
@@ -184,6 +187,7 @@ if(isset($_POST['submitDelete'])){
                     <label for="inputYear1"><?php echo $language['lYear'];?></label>
                     <select class="form-control" id="inputYear1" name="year">
                         <?php
+                        //select pre rok od 2015 po aktualny rok
                         $startYear = date("Y", 1420070400); //2015
                         $currentYear = date("Y");
                         $tmpYear = $currentYear;
@@ -221,6 +225,7 @@ if(isset($_POST['submitDelete'])){
                     <select class="form-control" id="inputSubject2" name="name">
                         <?php
 
+                            //select pre predmety
                             require('config.php');
                             $conn = new mysqli($hostname, $username, $password, $dbname,4171);
                             if ($conn->connect_error) {
@@ -228,6 +233,7 @@ if(isset($_POST['submitDelete'])){
                                 die("Connection failed: " . $conn->connect_error);
                             }
 
+                            //vyhladanie predmetov v databaze
                             $sql = "SELECT Predmet FROM `Predmety` GROUP BY `Predmet`";
                             $result = $conn->query($sql);
                             if ($result->num_rows > 0) {
@@ -244,6 +250,7 @@ if(isset($_POST['submitDelete'])){
                                     }
                                 }
 
+                                //vypisanie predmetov
                                 foreach ($results as $options){
 
                                     if ($options == $subject)
@@ -263,6 +270,7 @@ if(isset($_POST['submitDelete'])){
                     <label for="inputYear2"><?php echo $language['lYear'];?></label>
                     <select class="form-control" id="inputYear2" name="year">
                         <?php
+                            //select pre rok od 2015 po aktualny rok
                             $startYear = date("Y", 1420070400); //2015
                             $currentYear = date("Y");
                             $tmpYear = $currentYear;
@@ -287,6 +295,7 @@ if(isset($_POST['submitDelete'])){
         <div id="table" style="overflow-x: auto ">
             <?php
 
+            //ak bolo submitnute vymazanie premetu
             if(isset($_POST['submitDelete'])){
 
                 if ($deleted){
@@ -300,24 +309,25 @@ if(isset($_POST['submitDelete'])){
                 }
             }
 
-
+            //ak bolo submitnute vyhladanie premetu
             if(isset($_POST['submitCheck'])){
 
                 $subject = $_POST['name'];
                 $year = $_POST['year'];
                 $subjectName = $subject." ".$year;
 
-
+                //vyhladam nazvy stlpcov
                 $sql = "SHOW columns FROM `$subjectName`";
                 $result = $conn->query($sql);
 
                 if ($result->num_rows > 0) {
 
-                    echo "<table class=\"table table-striped table-bordered text-center\"  >
+                    echo "<table class=\"table table-striped table-bordered text-center\"  data-show-print=\"true\" >
                             <thead><tr class=\"color-black text-white\">";
 
                     while($row = $result->fetch_assoc()) {
 
+                        //vypisem nazvy stlpcov do tabulky
                         if($row['Field'] != 'rok'){
 
                                 if(strtolower($row['Field']) == 'id')
@@ -334,6 +344,7 @@ if(isset($_POST['submitDelete'])){
                     }
                 }
 
+                //vyberiem vsetky data pre zadany predmet
                 $sql = "SELECT * FROM `$subjectName`";
 
 
@@ -345,8 +356,10 @@ if(isset($_POST['submitDelete'])){
                     while($row = $result->fetch_assoc()) {
                        echo "<tr>";
                        $count = 1;
+                       //vypisem data do tabulky
                        foreach ($row as $col){
 
+                           //stlpec rok vynechame
                            if($count !=3) {
                                 echo "<th>" . $col . "</th>";
                            }
@@ -360,9 +373,8 @@ if(isset($_POST['submitDelete'])){
                           </table>";
 
                     $data = TRUE;
-
                 }
-                else{
+                else{//ak sa data nenasli
                     echo "<div style='text-align: center'>";
                     echo $language['noData'];
                     echo "</div>";

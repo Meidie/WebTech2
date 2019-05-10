@@ -1,10 +1,12 @@
 
 <?php
 session_start();
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
+//kontrola prihlasenia
 if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 ?>
@@ -51,6 +53,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 <div id="enDiv" ><a class="nav-link" id="eng" href="user_main.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
+                //vykreslenie spravnej vlajky
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
 
                     echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
@@ -105,10 +108,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
            </tr>
            </tbody>
        </table>
-
-
    </div>
-
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

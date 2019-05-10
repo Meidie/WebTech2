@@ -1,10 +1,13 @@
 
 <?php
 session_start();
+
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
+//kontrola prihlasenia
 if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']); exit();}
 ?>
 
@@ -50,6 +53,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 <div id="enDiv" ><a class="nav-link" id="eng" href="user_results.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
+                //vykreslenie spravnej vlajky
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
 
                     echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
@@ -80,18 +84,19 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
     </div>
     <div id="data"  >
         <?php
-            // Create connection
+            //vytvorit spojenie
             require('config.php');
             $conn = new mysqli($hostname, $username, $password, $dbname,4171);
             $conn->set_charset("utf8");
 
-            // Check connection
+            //kontrola spojenia
             if ($conn->connect_error) {
 
               die("Connection failed: " . $conn->connect_error);
             }
             $id = $_SESSION['id'];
-            //vyhladam pre daneho studenta vsetky predmety v ktorych ma zdane nejake udaje
+
+            //vyhladam pre daneho studenta vsetky predmety v ktorych ma zadane nejake udaje
             $sql = "SELECT Predmet from Predmety WHERE id_student = $id ";
             $result = $conn->query($sql);
 

@@ -1,22 +1,23 @@
 <?php
     session_start();
 
+    //prihlasenie
     if(isset($_POST['submitLogin']) && isset($_POST['username']) && isset($_POST['password'])){
 
-
+        //ak bolo username admin skotrolujem ci sa heslo zhoduje s tym v databaze a ak ano prihlasim uzivatela ako admina
         if($_POST['username'] == 'admin'){
 
-            // Create connection
+            // vytvorenie spojena
             require('config.php');
             $conn = new mysqli($hostname, $username, $password, $dbname,4171);
             $conn->set_charset("utf8");
 
-            // Check connection
+            //kontrola spojena
             if ($conn->connect_error) {
 
                 die("Connection failed: " . $conn->connect_error);
 
-            }else{
+            }else{//vyhladam heslo v databaze a porovnam hash
                 $name = $_POST['username'];
                 $sql = "SELECT password FROM Administrators WHERE name='$name'";
                 $result = $conn->query($sql);
@@ -26,12 +27,13 @@
                     $row = $result->fetch_assoc();
                     $hashPassword = hash("sha512", $_POST['password']);
 
+                    //ak sa hash rovna vytvorim session admin a presmerujem uzivatela na hlavnu stranku
                     if($row['password'] == $hashPassword){
                         $conn->close();
                         $_SESSION['admin'] = "true";
                         header('Location: ../../Uloha01/php/admin_main.php?lang='.$_GET['lang']);
                         exit();
-                    }else {
+                    }else {//ak sa hash nezhoduje presmerujem uzivatela spat na login stranku
                         $_SESSION['login_failed'] = "failed";
 
                         if (isset($_GET['lang'])) {
@@ -53,6 +55,7 @@
 
             $conn->close();
 
+            //ak nebolo username admin kontrolujem prihlasenie cez ldap
         }else {
 
             $ldapuid = $_POST['username'];
@@ -85,7 +88,7 @@
 
                     header('Location: ../../Uloha01/php/user_main.php?lang=' . $_GET['lang']);
                     exit();
-                }//ak sa nebindne cez zadane heslo skusim heslo vyhldat v databze
+                }//ak sa nebindne cez zadane heslo skusim heslo vyhldat v databaze
                 else {
 
                      $sr =ldap_search($ldapconn, $ldaprdn, "uid=".$ldapuid);

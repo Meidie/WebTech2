@@ -1,10 +1,13 @@
 
 <?php
 session_start();
+
+//zistenie a pridanie jazyka
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('Login/lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('Login/lang/eng.php');
 }else{$language = include('Login/lang/svk.php');}
 
+//kontrola prihlasenia
 if(isset($_SESSION['loggedIn'])){header('Location: Uloha01/php/user_main.php?lang='.$language['websiteLang']); exit();}
 else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.php?lang='.$language['websiteLang']); exit();}
 ?>
@@ -41,6 +44,7 @@ else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.p
                 <div id="enDiv" ><a class="nav-link" id="eng" href="index.php?lang=en"> <img src="Login/img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
+                //vykreslenie spravnej vlajky
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
 
                     echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
@@ -83,6 +87,7 @@ else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.p
 
         </div>
         <?php
+            //zlyhanie prihlasenia
             if(isset($_SESSION['login_failed'])){
                 echo "<script> document.getElementById('userName').classList.add('is-invalid')</script>";
                 echo "<script> document.getElementById('userPassword').classList.add('is-invalid')</script>";
