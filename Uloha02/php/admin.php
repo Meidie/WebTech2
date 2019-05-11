@@ -1,4 +1,17 @@
 <?php
+/*TODO
+
+dokoncit dvojjazycnost
+umoznit rozklikavacie riadky tabulky
+
+odsuhlasenie adminom
+vypisanie stavu
+*/
+
+include_once 'config.php';
+
+$GLOBALS['conn']=$conn;
+
 
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
@@ -28,7 +41,8 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
     <!--jQuery Datatables CSS-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
-
+    <!--jQuery Animation-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../css/style.css">
 
@@ -90,7 +104,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
             <label for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
-                <input name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="es">
+                <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="es">
                 <label class="custom-file-label" for="resultCSV"><?php echo $language['CSVfilePlaceholder']; ?></label>
             </div>
 
@@ -117,8 +131,240 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
     </form>
 
+    <div id="test">p</div>
+
     <h2><?php echo $language['teamOverview']; ?></h2>
 
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Team number</th>
+            <th scope="col">Body</th>
+            <th scope="col">Stav</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <?php
+        $sql = "SELECT * FROM timy";
+        $result = $conn->query($sql);
+
+        $GLOBALS['generatedID']=0; // toto ID je pridelovane inputom vo vyslednej tabulke
+
+        if ($result->num_rows > 0){
+
+            while($row = $result->fetch_assoc()) {
+
+            echo "<tr class=\"header\">";
+
+            echo "<td>".$row['cisloTimu']."</td><td>".manageTeamPoints($row['body'],$row['ID'])."</td><td>Prebieha hlasovanie</td>";
+
+            echo "</tr>";
+
+            teamTable($row['ID']);
+
+            adminAgreement($row['ID']);
+
+            $GLOBALS['generatedID']++; // Iteruje sa s kazdym novym zaznamom
+
+            }
+
+        }
+
+        ?>
+
+        </tbody>
+    </table>
+
+
+
+    <?php
+
+    function adminAgreement($teamID){
+
+        $stateOfButtons=shouldBeDisabled($teamID); // vrati null ak tlacidla maju byt aktivne
+                                                    // vrati disabled ak sa tim este nedohodol
+
+        echo "<tr class=\"overview\">";
+        echo "<td>Rozhodnutie administrátora</td>";
+        echo "<td colspan=\"2\">";
+        echo "<button type=\"button\"  class=\"btn btn-success\" $stateOfButtons >Súhlasím</button>";
+        echo "<button type=\"button\"  class=\"btn btn-danger\"  $stateOfButtons >Nesúhlasím</button>";
+        echo "</td>";
+        echo "</tr>";
+
+    }
+
+    function teamTable($teamID){
+
+                    $sql = "SELECT studenti.ID as id, email, meno, body, suhlas
+        FROM studenti, clenovaTimov
+        WHERE studenti.ID=clenovaTimov.IDziaka and IDtimu='".$teamID."'";
+                    $result = $GLOBALS['conn']->query($sql);
+
+        echo "<tr class=\"overview\">";
+
+        echo "<td colspan=\"3\">";
+
+        echo "<table class=\"table\">";
+        echo "<thead><tr>";
+
+        echo "<td>Email </td><td>Meno </td><td>Body </td><td>Suhlas </td>";
+
+        echo "</tr></thead>";
+
+        echo "<tbody>";
+
+    while($row = $result->fetch_assoc()) {
+
+        echo "<tr>";
+
+        echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td>".printPoints($row['body'])."</td>";
+
+        // treba spravit funkciu na rozhodnutie o pouziti agree obrazku
+        echo "<td>
+       <img alt=\"palec\" class=\"agreementIcon\" src=\"../teamOverviewIcons/".agreementIcon($row['suhlas'])."\"> 
+             </td>";
+
+        echo "</tr>";
+
+    }
+
+        echo "</tbody></table></td>";
+
+        echo "</tr>";
+
+
+    }
+
+    function manageTeamPoints($teamPoints,$teamID){
+    /*
+     V globalanej premennej sa generuje ID, ktore sa prideluje inputom v tabulkach.
+    Iteruje sa s kazdym opakovanim cyklu (s kazdou novou tabulkou timu).
+    Preto ma kazdy input v kazdej tabulke jedinecne ID
+    generatedID sa pouzije pri deklaracii id pre input a nasledne je pouzite vo funkcii, ktora odosiela ajax poziadavku.
+
+     */
+
+
+        return
+
+            "<form class=\"form-inline\">".
+
+            "<button  type=\"button\" class=\"btn btn-light\" onclick='changeTeamPointsInDatabase($teamID,".$GLOBALS['generatedID'].")'>Potvrdiť</button>".
+
+            "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" placeholder=\" ".$teamPoints."\">".
+
+
+            "</form>";
+
+    }
+
+    function printPoints($points){
+
+        if(is_null($points)) // body nie su zadane
+            return "--";
+
+        else                // body su zadane
+            return $points;
+
+    }
+
+    function agreementIcon($agreement){
+
+        if(is_null($agreement)) // suhlas je null
+            return "questionMark.png";
+
+        else if(!strcmp($agreement,"1")) // suhlas je true
+            return "studentAgree.png";
+
+        else if(!strcmp($agreement,"0")) // suhlas je false
+            return "studnetDisagree.png";
+
+    }
+
+    function shouldBeDisabled($teamID){
+
+        $sql = "SELECT 
+case 
+	when schvaleneKapitanom=true THEN 'null'
+    ELSE 'disabled'
+    end as stav
+from timy
+where ID='".$teamID."'";
+
+        $result = $GLOBALS['conn']->query($sql);
+
+        $row = $result->fetch_assoc();
+
+        return $row['stav'];
+
+    }
+
+    function stateOfTeam($points,$agreementOfTeam,$agreementOfAdmin){
+        if(is_null($points)) // ak admin este nezadal body
+            echo "nezadane body";
+
+        else{
+            if($agreementOfAdmin==true)
+                echo "Uspesne uzavrete";
+
+            else if($agreementOfAdmin==false)
+                echo "Zamietnute adminom";
+
+
+            else if( $agreementOfTeam==false)
+                echo "Nezhoda timu";
+
+            else if( $agreementOfTeam==true)
+                echo "Tim sa dohodol";
+
+
+        }
+
+
+
+
+
+    }
+
+    ?>
+
+    <script>
+
+        function changeTeamPointsInDatabase(teamID,inputID){
+
+
+            $.post("changePointsInDatabase.php",{ // asynchronne vykonany subor
+
+                teamID: teamID,
+                points: $("#pointsInput"+inputID).val() // id inputu. Jedinenecne pre kazdu tabulku
+
+            }, function (data) {
+
+                $("#test").html(data); // data su udaje poslane echom z php scriptu
+            })
+        }
+
+
+        //   $(document).ready(function() {
+
+/*
+        $(document).ready(function(){
+
+            $('.header').click(function () {
+                //  $(this).find('span').text(function(_, value){return value=='-'?'+':'-'});
+                $(this).nextUntil('tr.header').slideToggle(100); // or just use "toggle()"
+            });
+
+        });
+*/
+        //});
+
+    </script>
 
 </div>
 

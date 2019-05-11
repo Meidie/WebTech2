@@ -26,8 +26,21 @@ es: "Elegir"
     float: right;
 }
 
+/* ------ TeamOverview Page*/
 
+.overview{
+    /*  display: none; */
+}
 
+.agreementIcon{
+    width: 25px;
+    height: 25px;
+}
+
+.pointInput{
+    width: 10px;
+
+}
 
 /* ----------------------- */
 body {
