@@ -1,0 +1,156 @@
+<?php
+session_start();
+include "congif.php";
+if(isset($_POST['suhlas'])){
+    $sql = "UPDATE clenovaTimov SET suhlas = 1 where IDtimu = ".$_SESSION['tim']." AND IDziaka = ".$_SESSION['uziv'].";";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $sql = "SELECT distinct (suhlas) from clenovaTimov where  IDtimu = ".$_SESSION['tim'].";";
+    $stmt=$conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $celkovy_suhlas=false;
+    $row = $result->fetch_assoc();
+    if ($result->num_rows == 1 && $row['suhlas'] == 1) {
+        $sql = "update timy set schvaleneKapitanom = 1 where ID = ".$_SESSION['tim'].";";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    } else echo "Niekto ešte nesúhlasí";
+}
+?>
+<!doctype html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--jQuery Datatables CSS-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>Tim</title>
+</head>
+<body>
+<?php
+$tim = $_SESSION['tim'];
+$sql = "SELECT nazov FROM predmety where ID = (SELECT IDpredmetu from timy where ID = " . $tim . ");";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0 && $row = $result->fetch_assoc()) {
+    $nazov_predmetu = $row['nazov'];
+}
+$sql = "SELECT body FROM timy where ID = " . $tim . ";";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0 && $row = $result->fetch_assoc()) {
+    $body_tim = $row['body'];
+}
+$zvysne_body = $body_tim;
+$sql = "SELECT IDziaka,jeKapitan,body FROM clenovaTimov WHERE IDtimu =" . $tim . ";";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $zvysne_body = $zvysne_body - $row['body'];
+    }
+}
+?>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark color-black">
+        <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="navbar-item">
+                <div id="skDiv"><a class="nav-link" id="svk" href=""> <img src="img/sk.png" height="30"
+                                                                           alt="sk"></a></div>
+                <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
+                                                                           alt="uk"></a></div>
+            </li>
+            <li class="navbar-item">
+                <a class="nav-link" id="team" href="vyberTimu.php">Výber Tímu</a>
+            </li>
+            <?php
+            if($_SESSION['kapitan']==1){
+                print ('<li class="navbar-item"><a class="nav-link" id="kapitan" href="HelloWorld.php">Prehľad kapitána</a></li>');
+            }
+            if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
+
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            } else if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
+
+                echo '<script>document.getElementById("skDiv").style.display = "";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "none";</script>';
+            } else {
+
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            }
+            ?>
+            <!--TODO pri logout vymazat vsetky info zo sessio-->
+            <li class="navbar-item">
+                <a class="nav-link" id="logout" href="logout.php">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <h2 class="text-center"><?php echo $nazov_predmetu; ?> </h2>
+    <h4 class="text-center">Pridelené body: <?php echo $body_tim ?></h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Meno</th>
+            <th>Body</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $sql = "SELECT IDziaka,jeKapitan,body FROM clenovaTimov WHERE IDtimu =" . $tim . ";";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $sql = "SELECT meno FROM studenti where ID = " . $row[IDziaka] . ";";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result2 = $stmt->get_result();
+                if ($result2->num_rows > 0) {
+                    while ($row2 = $result2->fetch_assoc()) {
+                        echo '<input type="hidden" id="clenId" name="clenId" value="' . $row["IDziaka"] . '"><input type="hidden" id="tim" name="tim" value="' . $tim . '"';
+                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td>" . $row['body'] . "</td></tr>");
+                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td>" . $row['body'] . "</td></tr>");
+                    }
+                }
+            }
+        }
+        ?>
+        </tbody>
+    </table>
+    <?php
+        $sql = "SELECT suhlas from clenovaTimov where IDtimu = ".$tim." and IDziaka = ".$_SESSION['uziv'].";";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        if($row['suhlas']!=1){
+            print('<form onsubmit="return  confirm(\'Chcete odsúhlasiť rozdelenie bodov? Táto akcia sa nedá vrátiť.\')" action="student.php" id="frm" method="post">
+            <input type="submit"  class="btn btn-success" name="suhlas" value="Súhlasím s bodmi">
+            </form>');
+        }
+        else print ("<h4 class='text-center'>Body ste už odsúhlasili</h4>");
+    ?>
+</div>
+</body>
+</html>

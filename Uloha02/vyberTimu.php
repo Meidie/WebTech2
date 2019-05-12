@@ -19,7 +19,11 @@
 </head>
 <body>
 <?php
-include "congif.php"; ?>
+include "congif.php";
+session_start();
+//TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie
+$_SESSION = array();
+?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
@@ -30,22 +34,39 @@ include "congif.php"; ?>
                                                                                             alt="sk"></a></div>
                 <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
                                                                                             alt="uk"></a></div>
-
             </li>
             <li class="navbar-item">
                 <a class="nav-link" id="logout" href="logout.php">Logout</a>
             </li>
+            <?php
+
+            if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
+
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){
+
+                echo '<script>document.getElementById("skDiv").style.display = "";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "none";</script>';
+            }else{
+
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            }
+            ?>
         </ul>
     </nav>
 </header>
 <div class="container">
-    <form action="HelloWorld.php" method="post">
+    <form action="redirect.php" method="post">
         <div class="row text-center">
             <div class="col-md-6 offset-md-3">
                 <select class="form-control" required name="tim">
                     <option value="" selected disabled>Vyberte možnosť</option>
                     <?php
-                    $sql = "SELECT ID FROM timy WHERE ID = (SELECT IDtimu FROM clenovaTimov WHERE IDziaka = 86223);";
+                    //TODO treba ešte doplniť IDziaka podľa prihláseného uživateľa
+                    $_SESSION['uziv'] = 86247;
+                    $sql = "SELECT ID FROM timy WHERE ID = (SELECT IDtimu FROM clenovaTimov WHERE IDziaka = ".$_SESSION['uziv'].");";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result = $stmt->get_result();

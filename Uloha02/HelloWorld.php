@@ -1,3 +1,21 @@
+<?php
+include "congif.php";
+session_start();
+if (isset($_SESSION['tim'])){
+    $tim = $_SESSION['tim'];
+//    unset($_POST['tim']);
+    //TODO doriešiť vyhľadávanie pomocou ID prihláseného uživateľa
+} else header("Location: vyberTimu.php");
+if (isset($_POST['body']) && isset($_POST['clenId'])){
+    $body = $_POST['body'];
+    unset($_POST['body']);
+    $clenID =  $_POST['clenId'];
+    unset($_POST['clenId']);
+    $sql = "UPDATE clenovaTimov SET body = ".$body." where IDtimu = ".$tim." AND IDziaka = ".$clenID.";";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+}
+?>
 <!doctype html>
 <html lang="sk">
 <head>
@@ -15,13 +33,9 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <title>Document</title>
+    <title>Tím</title>
 </head>
 <body>
-<?php
-include "congif.php";
-$tim = $_POST['tim'];
-?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
@@ -32,14 +46,30 @@ $tim = $_POST['tim'];
                                                                                             alt="sk"></a></div>
                 <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
                                                                                             alt="uk"></a></div>
-
-            </li>
-            <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php">Logout</a>
             </li>
             <li class="navbar-item">
                 <a class="nav-link" id="team" href="vyberTimu.php">Výber Tímu</a>
             </li>
+            <li class="navbar-item">
+                <a class="nav-link" id="team" href="student.php">Prehľad bodov</a>
+            </li>
+            <li class="navbar-item">
+                <a class="nav-link" id="logout" href="logout.php">Logout</a>
+            </li>
+            <?php
+            if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){
+
+                echo '<script>document.getElementById("skDiv").style.display = "";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "none";</script>';
+            }else{
+
+                echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
+                echo '<script>document.getElementById("enDiv").style.display = "";</script>';
+            }
+            ?>
         </ul>
     </nav>
 </header>
@@ -59,33 +89,46 @@ $tim = $_POST['tim'];
         if ($result->num_rows > 0 && $row = $result->fetch_assoc()) {
             $body_tim = $row['body'];
         }
-    ?>
-    <h2 class="text-center"><?php echo $nazov_predmetu;?> </h2>
-    <h4 class="text-center">Pridelené body: <?php echo $body_tim?></h4>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Meno</th>
-            <th>Body</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        //SELECT meno FROM studenti WHERE ID = (
-        $sql = "SELECT IDziaka,jeKapitan FROM clenovaTimov WHERE IDtimu = 2;";
+        $zvysne_body = $body_tim;
+        $sql = "SELECT IDziaka,jeKapitan,body FROM clenovaTimov WHERE IDtimu =".$tim.";";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $sql = "SELECT meno FROM studenti where ID = " . $row[IDziaka] . ";";
+                $zvysne_body = $zvysne_body - $row['body'];
+            }
+        }
+    ?>
+    <h2 class="text-center"><?php echo $nazov_predmetu;?> </h2>
+    <h4 class="text-center">Pridelené body: <?php echo $body_tim?></h4>
+    <h4 class="text-center">Zvyšné body: <span id="zvysne_body"><?php echo $zvysne_body?></span></h4>
+    <table class="table table-striped">
+        <thead class="text-center">
+        <tr>
+            <th>Meno</th>
+            <th>Body</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $sql = "SELECT IDziaka,jeKapitan,body FROM clenovaTimov WHERE IDtimu =".$tim.";";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $sql = "SELECT meno FROM studenti where ID = " . $row['IDziaka'] . ";";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $result2 = $stmt->get_result();
                 if ($result2->num_rows > 0) {
                     while ($row2 = $result2->fetch_assoc()) {
-                        if ($row['jeKapitan']==1) print("<tr id='" . $row2['meno'] . "'><td>" . $row2['meno'] . " (C)</td><td>lul</td></tr>");
-                        else print("<tr id='" . $row2['meno'] . "'><td>" . $row2['meno'] . "</td><td>lul</td></tr>");
+                        echo '<form onchange="checkZvysok()" action="HelloWorld.php" method="post"><input type="hidden" id="clenId" name="clenId" value="' . $row["IDziaka"] . '"><input type="hidden" id="tim" name="tim" value="' . $tim . '"';
+                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $body_tim . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='Potvrdiť'></td></tr>");
+                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $body_tim . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='Potvrdiť'></td></tr>");
+                        echo '</form>';
                     }
                 }
             }
@@ -93,6 +136,16 @@ $tim = $_POST['tim'];
         ?>
         </tbody>
     </table>
+    <script>
+        function checkBody(id) {
+            let celkoveBody = document.getElementById("zvysne_body").innerHTML;
+            let clenoveBody = document.getElementById(id).value;
+            if(celkoveBody-clenoveBody <0) {
+                document.getElementById(id).value = celkoveBody;
+                alert("zle body");
+            }
+        }
+    </script>
 </div>
 </body>
 </html>
