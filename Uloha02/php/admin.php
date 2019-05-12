@@ -17,6 +17,8 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
+$GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
+
 /*
 
  * vypis studentov
@@ -139,9 +141,9 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Team number</th>
-            <th scope="col">Body</th>
-            <th scope="col">Stav</th>
+            <th scope="col"><?php echo $language['teamNumber']; ?></th>
+            <th scope="col"><?php echo $language['points']; ?></th>
+            <th scope="col"><?php echo $language['state']; ?></th>
 
         </tr>
         </thead>
@@ -158,9 +160,13 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
             while($row = $result->fetch_assoc()) {
 
+                $stateToPrint=stateToPrint(stateOfEvaluating($row['body'], $row['schvaleneKapitanom'], $row['schvaleneAdminom']));
+
             echo "<tr class=\"header\">";
 
-            echo "<td>".$row['cisloTimu']."</td><td>".manageTeamPoints($row['body'],$row['ID'])."</td><td>Prebieha hlasovanie</td>";
+            echo "<td>".$row['cisloTimu']."</td><td>".manageTeamPoints($row['body'],$row['ID'])."</td>
+            
+                  <td>".$stateToPrint."</td>";
 
             echo "</tr>";
 
@@ -183,6 +189,53 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
     <?php
 
+    function stateToPrint($state){
+
+        if(!strcmp($state,"noPoints"))
+            return $GLOBALS['language']['enteringPoints'];
+
+        else if(!strcmp($state,"adminAgrees"))
+            return $GLOBALS['language']['successfullyClosed'];
+
+        else if(!strcmp($state,"adminDisagrees"))
+            return $GLOBALS['language']['deniedByAdmin'];
+
+        else if(!strcmp($state,"teamAgrees"))
+            return $GLOBALS['language']['teamInAgreement'];
+
+        else if(!strcmp($state,"teamDisagrees"))
+            return $GLOBALS['language']['teamInDisagreement'];
+
+        else if(!strcmp($state,"voting"))
+            return $GLOBALS['language']['teamIsVoting'];
+
+    }
+
+    function stateOfEvaluating($points, $teamAgreement, $adminAgreement){
+        if(is_null($points))
+            return "noPoints";
+        else{
+            if(!strcmp($adminAgreement,"1"))
+                return "adminAgrees";
+
+            else if(!strcmp($adminAgreement,"0"))
+                return "adminDisagrees";
+
+            else if(!strcmp($teamAgreement,"1"))
+                return "teamAgrees";
+
+            else if(!strcmp($teamAgreement,"0"))
+                return "teamDisagrees";
+
+            else
+                return "voting";
+
+        }
+
+
+
+    }
+
     function adminAgreement($teamID){
 
         $stateOfButtons=shouldBeDisabled($teamID); // vrati null ak tlacidla maju byt aktivne
@@ -190,9 +243,9 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
         echo "<tr class=\"overview\">";
         echo "<td>Rozhodnutie administrátora</td>";
-        echo "<td colspan=\"2\">";
-        echo "<button type=\"button\"  class=\"btn btn-success\" $stateOfButtons >Súhlasím</button>";
-        echo "<button type=\"button\"  class=\"btn btn-danger\"  $stateOfButtons >Nesúhlasím</button>";
+        echo "<td colspan=\"2\">";          // posiela request na zmenu stplca schvaleneAdminom v dbs. Success button posle 1. danger button 0
+        echo "<button type=\"button\"  class=\"btn btn-success\" onclick='changeAdminAgreementInDatabase($teamID,1)' $stateOfButtons >".$GLOBALS['language']['agree']."</button>";
+        echo "<button type=\"button\"  class=\"btn btn-danger\"  onclick='changeAdminAgreementInDatabase($teamID,0)' $stateOfButtons >".$GLOBALS['language']['disagree']."</button>";
         echo "</td>";
         echo "</tr>";
 
@@ -254,7 +307,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 
             "<form class=\"form-inline\">".
 
-            "<button  type=\"button\" class=\"btn btn-light\" onclick='changeTeamPointsInDatabase($teamID,".$GLOBALS['generatedID'].")'>Potvrdiť</button>".
+            "<button  type=\"button\" class=\"btn btn-light\" onclick='changeTeamPointsInDatabase($teamID,".$GLOBALS['generatedID'].")'>".$GLOBALS['language']['confirm']."</button>".
 
             "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" placeholder=\" ".$teamPoints."\">".
 
@@ -335,8 +388,21 @@ where ID='".$teamID."'";
 
     <script>
 
-        function changeTeamPointsInDatabase(teamID,inputID){
 
+        function changeAdminAgreementInDatabase(teamID,agreement){
+
+            $.post("changeAdminAgreementInDatabase.php",{ // asynchronne vykonany subor
+
+                teamID: teamID,
+                agreement: agreement // id inputu. Jedinenecne pre kazdu tabulku
+
+            }, function (data) {
+
+                $("#test").html(data); // data su udaje poslane echom z php scriptu
+            })
+        }
+
+        function changeTeamPointsInDatabase(teamID,inputID){
 
             $.post("changePointsInDatabase.php",{ // asynchronne vykonany subor
 

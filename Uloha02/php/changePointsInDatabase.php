@@ -1,7 +1,7 @@
 <?php
 include 'config.php';
 
-//if(isset($_POST['teamID']) && isset($_POST['points'])) {
+if(isset($_POST['teamID']) && isset($_POST['points'])) {
 
 
 $sql = "UPDATE timy
@@ -21,7 +21,7 @@ $conn->query($sql);
   echo var_dump($_POST['points'])  ;
 */
 
-//}
+}
 
 
 
