@@ -1,11 +1,16 @@
 <?php
 /*TODO
 
-dokoncit dvojjazycnost
-umoznit rozklikavacie riadky tabulky
 
-odsuhlasenie adminom
-vypisanie stavu
+umoznit rozklikavacie riadky tabulky
+generovat school year select cez php date
+setnutie hlasovania na null, ked admin zmeni  body
+podstranka na statistiky
+premazanie celej databazy ak uploadovany predmet a rok tam uz je
+uprava css
+po kliknuti na potvrdit tlacidlo sa objavi zmenit, a input je disabled
+
+file chooser prelozit browse do sk
 */
 
 include_once 'config.php';
@@ -47,6 +52,8 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <!--Graph.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <title>ADMIN</title>
 </head>
@@ -70,17 +77,21 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
 </header>
 
-<body>
+<body onload="getStatisticFromDatabase()">
+
+
 
 <div class="container">
+
+    <div id="formulare">  <!--V tomto dive su formulare-->
 
     <form action="csvIntoDatabase.php" method="post" id="addResults" enctype="multipart/form-data">
 
         <h2><?php echo $language['formHeader']; ?></h2>
 
-        <div class="form-inline">
+          <div class="form-inline">
 
-        <div class="form-group ">
+        <div class="form-group col-sm-2">
 
             <label for="schoolYear"> <?php echo $language['schoolYear']; ?> </label>
             <select name="schoolYear" class="form-control" id="schoolYear">
@@ -90,16 +101,16 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
         </div>
 
-        <div class="form-group">
+        <div class="form-group col-sm-3">
 
             <label for="subject"><?php echo $language['subjectName']; ?></label>
             <input name="subject" type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
 
         </div>
 
-        </div>
+          </div>
 
-        <div class="form-inline">
+        <div class="form-inline col-sm-8">
 
         <div class="form-group">
 
@@ -113,7 +124,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
         </div>
 
 
-            <div class="form-group" id="separatorDiv">
+            <div class="form-group form-inline" id="separatorDiv">
 
             <label for="separator"><?php echo $language['separator']; ?></label>
             <select name="separator" class="form-control" id="separator">
@@ -121,10 +132,10 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
                 <option value=",">,</option>
 
             </select>
-
+                <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+
 
         </div>
 
@@ -132,6 +143,199 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
 
     </form>
+
+        <form action="csvexport.php" method="post" id="csvExport">
+            <div class="form-row text-center">
+                <div class="col-md-3 offset-md-3">
+                    <select class="form-control" required name="predmet">
+                        <option value="" selected disabled>Vyberte možnosť</option>
+                        <?php
+                        $sql = "SELECT nazov from predmety;";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                print ("<option value='" . $row['nazov'] . "'>" . $row['nazov'] . "</option>");
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" required name="rok">
+                        <option value="" selected disabled>Vyberte možnosť</option>
+                        <?php
+                        $sql = "SELECT distinct (rok)from timy;";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                print ("<option value='" . $row['rok'] . "'>" . $row['rok'] . "</option>");
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="submit" class="btn btn-warning">
+            </div>
+        </form>
+
+    </div>
+
+    <div id="graphs">
+
+        <canvas id="pie-chart" width="400" height="100" ></canvas>
+
+        <canvas id="teamsGraph" width="400" height="100" ></canvas>
+
+        <script>
+            /*
+             AJ GRAF AJ STATISTICKE UDAJE
+
+             vnoreny selekt
+            select ID
+from timy
+where IDpredmetu=12
+
+            select IDziaka
+from clenovaTimov
+where EXISTS (
+    select ID
+    from timy
+    where IDpredmetu=12
+    and timy.ID=clenovaTimov.Idtimu
+)
+
+select count(IDziaka) as vsetci,
+(SELECT COUNT(*) from clenovaTimov where suhlas=true) as suhlasiaci,
+(SELECT count(*) from clenovaTimov where suhlas=false) as nesuhlasiaci,
+(SELECT count(*) from clenovaTimov where suhlas is null ) as nevyjadreni
+from clenovaTimov
+where EXISTS (
+    select ID
+    from timy
+    where IDpredmetu=12
+    and timy.ID=clenovaTimov.Idtimu
+    )
+
+
+select count(ID) as vsetci,
+(SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom=true) as uzavrete,
+(SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom is null) as nevyjadreneAdminom,
+(SELECT COUNT(*) from timy where schvaleneKapitanom is null and schvaleneAdminom is null) as nevyjadreneStudentmi
+from timy
+where IDpredmetu=12
+
+
+
+             */
+
+            function getStatisticFromDatabase() {
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+
+                        /*
+                       $statistic->allTeams=$row['vsetci'];
+    $statistic->closedTeams=$row['suhlasiaci'];
+    $statistic->undexpresseBydAdmin=$row['nesuhlasiaci'];
+    $statistic->unexpressedByStudents=$row['nevyjadreni'];
+                        */
+
+
+                        var myObj = JSON.parse(this.responseText);
+
+                        /*
+                        document.getElementById("test").innerText=
+                            myObj.allStudents+','+myObj.agreedStudents+','+myObj.disagreedStudents+','+myObj.unexpressedStudents+
+                        ','+myObj.allTeams+','+myObj.closedTeams+','+myObj.undexpresseBydAdmin+','+myObj.unexpressedByStudents;
+                       */
+
+                        crateChart("pie-chart","Študenti","Súhlasiaci","Nesúhlasiaci","Nevyjadrený",
+                            myObj.agreedStudents,myObj.disagreedStudents,myObj.unexpressedStudents);
+
+                        crateChart("teamsGraph","Tímy","Úspešne uzavreté","Neodsúhlasené adminom","Nevyjadrení študenti",
+                            myObj.closedTeams,myObj.undexpresseBydAdmin,myObj.unexpressedByStudents);
+
+                        //   placeMarkers(myObj)
+/*
+                        if(myObj.lat!=null) // ak response nie je null, vykreslim markery
+                            placeMarkers(myObj);
+*/
+
+                    }
+                };
+                xmlhttp.open("GET", "getStatisticFromDatabase.php", true);
+                xmlhttp.send();
+            }
+
+
+            function crateChart(chartCanvas,title,axis1,axis2,axis3,data1,data2,data3) {
+                new Chart(document.getElementById(chartCanvas), {
+                    type: 'pie',
+                    data: {
+                        labels: [axis1,axis2,axis3],
+                        datasets: [{
+                            label: "Population (millions)",
+                            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                            data: [data1,data2,data3]
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: title
+                        }
+                    }
+                });
+            }
+/*
+            new Chart(document.getElementById("pie-chart"), {
+                type: 'pie',
+                data: {
+                    labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                    datasets: [{
+                        label: "Population (millions)",
+                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                        data: [2478,5267,734,784,433]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Predicted world population (millions) in 2050'
+                    }
+                }
+            });
+
+            new Chart(document.getElementById("teamsGraph"), {
+                type: 'pie',
+                data: {
+                    labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                    datasets: [{
+                        label: "Population (millions)",
+                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                        data: [2478,5267,734,784,433]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Predicted world population (millions) in 2050'
+                    }
+                }
+            });
+*/
+
+        </script>
+
+    </div>
+
 
     <div id="test">p</div>
 

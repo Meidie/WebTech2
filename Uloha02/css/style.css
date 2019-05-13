@@ -5,6 +5,37 @@
 
 .form-control{margin: 10px}
 
+#resultCSV{
+    width: 200px;
+}
+
+#submitButton{
+    width: 100px;
+}
+#separator{
+    width: 60px;
+}
+
+#graphs{
+    height: 400px;
+}
+/*
+
+#addResults{
+    float: left;
+}
+
+#csvExport{
+    float: right;
+}
+
+*/
+
+
+#formulare{
+    background-color: #E3E3E3;
+}
+
 
 
 #separatorDiv{
@@ -25,6 +56,18 @@ es: "Elegir"
     position: relative;
     float: right;
 }
+/* ------ Grafy*/
+
+#pie-chart{
+    float: left;
+
+}
+
+#teamsGraph{
+    float: right;
+}
+
+
 
 /* ------ TeamOverview Page*/
 
