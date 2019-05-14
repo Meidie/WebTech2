@@ -48,7 +48,7 @@ session_start();
                 <!--<h1 class="text-white"></h1>-->
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="index.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?>Upload csv</a>
+                <a class="nav-link" href="indexlu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?>Upload csv</a>
             </li>
             <li class="navbar-nav mr-auto active">
                 <a class="nav-link" href="mailinfo.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?>Mail info</a>
