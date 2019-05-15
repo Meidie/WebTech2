@@ -211,6 +211,8 @@
 
             <?php
 
+            require 'phpmailer/PHPMailerAutoload.php';
+
             function generateRandomString($length = 10)
             {
                 return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
@@ -271,16 +273,27 @@
                     $premenna = $_POST["ciarka2"];
                     if (($handle = fopen($path, 'r')) !== FALSE) { // Check the resource is valid
                         $poc = 1;
+                        $pole_email=array();
+                        $pole_mena=array();
+
                         echo "    <div class=\"table-responsive\">
                                <table class=\"table table-striped table-bordered\" id=\"customer-data\">
                                  <thead>
                                   <tr>";
+
                         while (($data = fgetcsv($handle, 1000, "$premenna")) !== FALSE) {
                                 $i = 0;
 
                                 if($jedenkrat == 0){
                                     while ($i < count($data)) {
                                         echo "<th>" . utf8_encode($data[$i]) . "</th>";
+
+                                        if(strpos( utf8_encode($data[$i]) ," ") != false){
+                                            array_push($pole_mena, $data[$i]);
+                                        }
+                                        if(strpos( utf8_encode($data[$i]) ,"@") != false){
+                                            array_push($pole_email, $data[$i]);
+                                        }
                                         $i++;
                                     }
                                     echo"</tr>
@@ -304,6 +317,68 @@
                         }
                         fclose($handle);
                     }
+
+                    /*-----------------------------------Posielanie mailov------------------------------------
+                    ------------------------------------------------------------------------------------------*/
+                    //echo $pole[1];
+                    $subject="Predmet";
+                    $date= date("Y-m-d");
+
+                    $mail = new PHPMailer();
+
+                    $mail->isSMTP();
+                    $mail->Host = "mail.stuba.sk";
+                    $mail->SMTPSecure = "tls";
+                    $mail->Port = 587;
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'xkolumber@stuba.sk';
+                    $mail->Password = 'eFa.ohi.2.sir';
+
+                    $mail->setFrom('xkolumber@stuba.sk', 'Lubos');
+                    while (list ($key, $val) = each ($pole_email)) {
+                        $mail->AddAddress($val);         //Viacnasobne ukladanie e-mailovych adries
+                    }
+                    $mail->Subject =  $subject;
+                    $mail->Body = 'this is some body';
+
+                    if ($mail->send())
+                    {
+                        echo "Mail sent";
+                        $servername="localhost";
+                        $username="xkolumber";
+                        $password="F6HYmu3OqVYL";
+                        $db="webtech2";
+
+                        $conn = new mysqli($servername, $username, $password, $db);
+                        $conn->set_charset(utf8);
+                        // Check connection
+                        if ($conn->connect_error) {
+                            die("Connection failed: " . $conn->connect_error);
+                        }
+                        else{
+                            // echo"Pripojeny";
+                        }
+
+                        $dlzka_pola=count($pole_mena);
+                        $i=0;
+                        while($i<$dlzka_pola)
+                        {
+                            $sql = "INSERT INTO odoslane_spravy (id_sablony, datum, meno_studenta, predmet) VALUES ('1', '$date','$pole_mena[$i]','$subject')";
+                            if ($conn->query($sql) === TRUE) {
+                                //echo "New record created successfully";
+                            } else {
+                                echo "Error: " . $sql . "<br>" . $conn->error;
+                            }
+                            $i++;
+                        }
+
+
+                    }
+                    else{
+                        echo "Nieco nefunguje";
+                    }
+                    print_r($pole_email);
+
                 }
             }
             $jedenkrat = 0;
@@ -313,14 +388,14 @@
     </div>
 </div>
 <!-----------------------------------------------------------------------------
----------------------------Odosielanie mailu---------------------------------->
+---------------------------Odosielanie mailu--------------------------------
 <form action="" method="post">
     Y/N:<br>
     <input type="text" name="pismeno">
     <br>
 
     <input type="submit" value="Submit">
-</form>
+</form>-->
 <?php
 /*if (isset($_POST["pismeno"])) {
    // phpinfo();
@@ -346,7 +421,7 @@
 
 }*/
 
-require 'phpmailer/PHPMailerAutoload.php';
+/*require 'phpmailer/PHPMailerAutoload.php';
 
 $mail = new PHPMailer();
 
@@ -364,7 +439,7 @@ $mail->Subject = 'SMTP email test';
 $mail->Body = 'this is some body';
 
 if ($mail->send())
-    echo "Mail sent";
+    echo "Mail sent";*/
 ?>
 </body>
 </html>
