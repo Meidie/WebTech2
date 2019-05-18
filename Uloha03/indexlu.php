@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 
 session_start();
 ?>
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
 
 
@@ -19,7 +19,7 @@ session_start();
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
     <title>Webtech Projekt</title>
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
@@ -32,8 +32,28 @@ session_start();
             margin: 0 auto;;
         }
     </style>
-   <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=gq5pnp077xwzrzk122wbe3c92dfl5qx4cvh0bnc9z8g00gcf"></script>
-    <script>tinymce.init({selector:'textarea'});</script>
+    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=gq5pnp077xwzrzk122wbe3c92dfl5qx4cvh0bnc9z8g00gcf"></script>
+    <script>tinymce.init({selector:'#froala-editor'});
+
+    </script>
+
+    <script>
+        $(document).ready(function(){
+        $("#sablona").click(function(){
+
+        var d = document.getElementById("sablona").value;
+        var url = 'https://147.175.121.210.nip.io:4105/Pepega6/server.php';
+        url = url + '/getsablona/' + d;
+        //alert(url);
+
+        $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(msg){
+        $("#plaintext").html(msg);
+        $("#htmltext").html(msg);      }});
+        });
+    </script>
 
 </head>
 <body>
@@ -108,73 +128,73 @@ session_start();
     <br />
     <br />
 
-           <?php
-           if(!empty($_FILES['csv_file1'])) {
-               $path = "uploads/";
-               $path = $path . basename($_FILES['csv_file1']['name']);
-               if (move_uploaded_file($_FILES['csv_file1']['tmp_name'], $path)) {
-                  /* echo "The file " . basename($_FILES['csv_file1']['name']) .
-                       " has been uploaded";*/
-               } else {
-                   echo "There was an error uploading the file, please try again!";
-               }
-               $premenna = $_POST["ciarka1"];
-               $jedenkrat = 0;
-                $list=array();
-               if (($handle = fopen($path, 'r')) !== FALSE) { // Check the resource is valid
-                   echo "    <div class=\"table-responsive\">
+    <?php
+    if(!empty($_FILES['csv_file1'])) {
+        $path = "uploads/";
+        $path = $path . basename($_FILES['csv_file1']['name']);
+        if (move_uploaded_file($_FILES['csv_file1']['tmp_name'], $path)) {
+            /* echo "The file " . basename($_FILES['csv_file1']['name']) .
+                 " has been uploaded";*/
+        } else {
+            echo "There was an error uploading the file, please try again!";
+        }
+        $premenna = $_POST["ciarka1"];
+        $jedenkrat = 0;
+        $list=array();
+        if (($handle = fopen($path, 'r')) !== FALSE) { // Check the resource is valid
+            echo "    <div class=\"table-responsive\">
                                <table class=\"table table-striped table-bordered\" id=\"customer-data\">
                                  <thead>
                                   <tr>";
-                   while (($data = fgetcsv($handle, 1000, "$premenna")) !== FALSE) {
-                       $i = 0;
-                           if($jedenkrat == 0){
-                               while ($i < count($data)) {
-                                   echo "<th>" . utf8_encode($data[$i]) . "</th>";
-                                   $i++;
-                               }
-                               echo"<th>Heslo</th>
+            while (($data = fgetcsv($handle, 1000, "$premenna")) !== FALSE) {
+                $i = 0;
+                if($jedenkrat == 0){
+                    while ($i < count($data)) {
+                        echo "<th>" . utf8_encode($data[$i]) . "</th>";
+                        $i++;
+                    }
+                    echo"<th>Heslo</th>
                                     </tr>
                                     </thead>";
-                               $jedenkrat = 1;
-                           }
-                       echo "<tr>";
-                       while ($i < count($data)) {
-                           echo "<td>" . $data[$i] . "</td>";
-                           array_push($list,$data[$i]);
-                           $i++;
-                           if($i == count($data)) {
-                               $heslo=generateRandomString(15);
-                               array_push($list,$heslo);
-                               echo "<td>" . $heslo . "</td>";
-                               echo "</tr>"; }
-                       }
-                   }
-                   $pole=array_chunk($list,5, true);
-                   $file = fopen("upraveny_subor.csv","w");
-                    if($premenna==';')
-                    {
-                        foreach ($pole as $line)
-                        {
-                            fputcsv($file,$line,";");
-                        }
-                    }
-                    else
-                    {
-                        foreach ($pole as $line)
-                        {
-                            fputcsv($file,$line,",");
-                        }
-                    }
-                   fclose($file);
-                   fclose($handle);
-               }
-           }
-           $jedenkrat = 0;
-                    ?>
-        </table>
+                    $jedenkrat = 1;
+                }
+                echo "<tr>";
+                while ($i < count($data)) {
+                    echo "<td>" . $data[$i] . "</td>";
+                    array_push($list,$data[$i]);
+                    $i++;
+                    if($i == count($data)) {
+                        $heslo=generateRandomString(15);
+                        array_push($list,$heslo);
+                        echo "<td>" . $heslo . "</td>";
+                        echo "</tr>"; }
+                }
+            }
+            $pole=array_chunk($list,5, true);
+            $file = fopen("upraveny_subor.csv","w");
+            if($premenna==';')
+            {
+                foreach ($pole as $line)
+                {
+                    fputcsv($file,$line,";");
+                }
+            }
+            else
+            {
+                foreach ($pole as $line)
+                {
+                    fputcsv($file,$line,",");
+                }
+            }
+            fclose($file);
+            fclose($handle);
+        }
+    }
+    $jedenkrat = 0;
+    ?>
+    </table>
 
-    </div>
+</div>
 </div>
 
 
@@ -199,123 +219,134 @@ session_start();
     <br />
     <br />
 
-            <?php
-            require 'phpmailer/PHPMailerAutoload.php';
-            function generateRandomString($length = 10)
-            {
-                return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
-            }
-   /*         function verejnaip()
-            {
-                $x = "147.175.121.210";
-                return $x;
-            }
-            function privatnaip($i)
-            {
-                $x = "192.168.0.";
-                $x .= $i;
-                return $x;
-            }
-            function ssh()
-            {
-                $x = "2201";
-                return $x;
-            }
-            function http()
-            {
-                $x = "8001";
-                return $x;
-            }
-            function https()
-            {
-                $x = "4401";
-                return $x;
-            }
-            function misc1()
-            {
-                $x = "9001";
-                return $x;
-            }
-            function misc2()
-            {
-                $x = "1901";
-                return $x;
-            }*/
-            if(!empty($_FILES['csv_file2'])) {
-                $path = "uploads/";
-                $path = $path . basename($_FILES['csv_file2']['name']);
-                if (move_uploaded_file($_FILES['csv_file2']['tmp_name'], $path)) {
-                    /*echo "The file " . basename($_FILES['csv_file2']['name']) .
-                        " has been uploaded";*/
-                } else {
-                    echo "There was an error uploading the file, please try again!";
-                }
-                if (!empty($_FILES['csv_file2']['name'])) {
-                    $premenna = $_POST["ciarka2"];
-                    if (($handle = fopen($path, 'r')) !== FALSE) { // Check the resource is valid
-                        $poc = 1;
-                        $pole_email=array();
-                        $pole_mena=array();
-                        echo "    <div class=\"table-responsive\">
+    <?php
+    require 'phpmailer/phpmailer/PHPMailerAutoload.php';
+    function generateRandomString($length = 10)
+    {
+        return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
+    }
+    /*         function verejnaip()
+             {
+                 $x = "147.175.121.210";
+                 return $x;
+             }
+             function privatnaip($i)
+             {
+                 $x = "192.168.0.";
+                 $x .= $i;
+                 return $x;
+             }
+             function ssh()
+             {
+                 $x = "2201";
+                 return $x;
+             }
+             function http()
+             {
+                 $x = "8001";
+                 return $x;
+             }
+             function https()
+             {
+                 $x = "4401";
+                 return $x;
+             }
+             function misc1()
+             {
+                 $x = "9001";
+                 return $x;
+             }
+             function misc2()
+             {
+                 $x = "1901";
+                 return $x;
+             }*/
+    if(!empty($_FILES['csv_file2'])) {
+        $path = "uploads/";
+        $path = $path . basename($_FILES['csv_file2']['name']);
+        if (move_uploaded_file($_FILES['csv_file2']['tmp_name'], $path)) {
+            /*echo "The file " . basename($_FILES['csv_file2']['name']) .
+                " has been uploaded";*/
+        } else {
+            echo "There was an error uploading the file, please try again!";
+        }
+        if (!empty($_FILES['csv_file2']['name'])) {
+            $premenna = $_POST["ciarka2"];
+            if (($handle = fopen($path, 'r')) !== FALSE) { // Check the resource is valid
+                $poc = 1;
+                $pole_email=array();
+                $pole_mena=array();
+                echo "    <div class=\"table-responsive\">
                                <table class=\"table table-striped table-bordered\" id=\"customer-data\">
                                  <thead>
                                   <tr>";
-                        while (($data = fgetcsv($handle, 1000, "$premenna")) !== FALSE) {
-                                $i = 0;
-                                if($jedenkrat == 0){
-                                    while ($i < count($data)) {
-                                        echo "<th>" . $data[$i] . "</th>";
-                                        $i++;
-                                    }
-                                    echo"</tr>
-                                    </thead>";
-                                }
-                                else{
-                                    echo"<tr>";
-                                }
-                            while ($i < count($data)) {
-                                if(strpos( $data[$i] ," ") != FALSE){
-                                    array_push($pole_mena, $data[$i]);
-
-                                }
-                                if(strpos( $data[$i] ,"@") != FALSE){
-                                    array_push($pole_email, $data[$i]);
-
-                                }
-                                echo "<td>" . $data[$i] . "</td>";$i++;
-                            }
-                                if($jedenkrat == 0){
-                                    $jedenkrat = 1;
-                                }
-                                else{
-                                    echo"</tr>";
-                                }
+                while (($data = fgetcsv($handle, 1000, "$premenna")) !== FALSE) {
+                    $i = 0;
+                    if($jedenkrat == 0){
+                        while ($i < count($data)) {
+                            echo "<th>" . $data[$i] . "</th>";
+                            $i++;
                         }
-                        fclose($handle);
-                        //print_r($pole_mena);
-                        $_SESSION['mena']=$pole_mena;
-                        $_SESSION['email']=$pole_email;
-                        //print_r($_SESSION['email']);
+                        echo"</tr>
+                                    </thead>";
                     }
-                    /*-----------------------------------Posielanie mailov------------------------------------
-                    ------------------------------------------------------------------------------------------*/
-                    //echo $pole[1];
+                    else{
+                        echo"<tr>";
+                    }
+                    while ($i < count($data)) {
+                        if(strpos( $data[$i] ," ") != FALSE){
+                            array_push($pole_mena, $data[$i]);
 
+                        }
+                        if(strpos( $data[$i] ,"@") != FALSE){
+                            array_push($pole_email, $data[$i]);
+
+                        }
+                        echo "<td>" . $data[$i] . "</td>";$i++;
+                    }
+                    if($jedenkrat == 0){
+                        $jedenkrat = 1;
+                    }
+                    else{
+                        echo"</tr>";
+                    }
                 }
+                fclose($handle);
+                //print_r($pole_mena);
+                $_SESSION['mena']=$pole_mena;
+                $_SESSION['email']=$pole_email;
+                //print_r($_SESSION['email']);
             }
-            $jedenkrat = 0;
-            ?>
-        </table>
+            /*-----------------------------------Posielanie mailov------------------------------------
+            ------------------------------------------------------------------------------------------*/
+            //echo $pole[1];
+
+        }
+    }
+    $jedenkrat = 0;
+    ?>
+    </table>
     <h2>Odoslanie údajov</h2>
     <form action="" method="post">
         Predmet:<br>
         <input type="text" name="predmet">
         <br>
         Správa:<br>
-        <textarea id="froala-editor" name="noise">Initialize the Froala WYSIWYG HTML Editor on a textarea.</textarea>
+        <input type="radio" name="rad1" id="yescheck1" onchange="changeradio()" checked> Plain text
+        <input type="radio" name="rad1" id="yescheck2" onchange="changeradio()"> Html text
+
+        <p class="p_form">Šablóna</p>
+        <select id="sablona" name="combo_sablona">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+
+
+        <div id="plaintext"><textarea id="plaintext_area" name="plaintext_name"></textarea></div>
+        <div id="htmltext"><textarea id="froala-editor" name="noise">Dobrý deň p. Kolumber</textarea></div>
         <input type="submit" value="Submit" required>
     </form>
-    </div>
+</div>
 </div>
 <!-----------------------------------------------------------------------------
 ---------------------------Odosielanie mailu-------------------------------->
@@ -333,9 +364,9 @@ if(isset($_POST["predmet"]))
     $mail->SMTPSecure = "tls";
     $mail->Port = 587;
     $mail->SMTPAuth = true;
-    $mail->Username = 'xkolumber@stuba.sk';
-    $mail->Password = 'eFa.ohi.2.sir';
-    $mail->setFrom('xkolumber@stuba.sk', 'Lubos');
+    $mail->Username = 'xorths@stuba.sk';
+    $mail->Password = 'zadaj nieco';
+    $mail->setFrom('xorths@stuba.sk', 'Samuel');
     while (list ($key, $val) = each ($_SESSION['email'])) {
         $mail->AddAddress($val);         //Viacnasobne ukladanie e-mailovych adries
     }
@@ -361,7 +392,7 @@ if(isset($_POST["predmet"]))
         while (list ($keyy, $val) = each ($_SESSION['mena'])) {
             $sql = "INSERT INTO odoslane_spravy (id_sablony, datum, meno_studenta, predmet) VALUES ('1', '$date','$val','$subject')";
             if ($conn->query($sql) === TRUE) {
-               // echo "New record created successfully";
+                // echo "New record created successfully";
             } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
             }       //Viacnasobne ukladanie e-mailovych adries
@@ -401,3 +432,27 @@ if(array_key_exists('test',$_POST)){
 </body>
 </html>
 
+<script>
+
+    var plainradio = document.getElementById('yescheck1');
+    var htmlradio = document.getElementById('yescheck2');
+    var htmleditor = document.getElementById('htmltext');
+    var plaineditor = document.getElementById('plaintext');
+    htmleditor.style.display = "none";
+
+
+    function changeradio() {
+
+        if(plainradio.checked){
+            htmleditor.style.display = "none";
+            plaineditor.style.display = "block";
+
+        }
+        else if(htmlradio.checked){
+            htmleditor.style.display = "block";
+            plaineditor.style.display = "none";
+        }
+    }
+
+
+</script>
