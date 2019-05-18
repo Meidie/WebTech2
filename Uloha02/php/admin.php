@@ -3,6 +3,8 @@
 
 jquery auto load každých 10 sec
 
+Export csv translate
+
 odstranit funkciu z setTeamPointsIndatabse v JS
 
 umoznit rozklikavacie riadky tabulky
@@ -38,9 +40,9 @@ include_once 'config.php';
 $GLOBALS['conn']=$conn;
 
 
-if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/svk.php');
-}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
-}else{$language = include('../lang/svk.php');}
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../Adminlang/svk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../Adminlang/eng.php');
+}else{$language = include('../Adminlang/svk.php');}
 
 $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
@@ -63,7 +65,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
     <!--jQuery Animation-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/Adminstyle.css">
     <!--Graph.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
