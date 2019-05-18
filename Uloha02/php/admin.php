@@ -1,14 +1,34 @@
 <?php
 /*TODO
 
+jquery auto load každých 10 sec
+
+odstranit funkciu z setTeamPointsIndatabse v JS
 
 umoznit rozklikavacie riadky tabulky
-generovat school year select cez php date
-setnutie hlasovania na null, ked admin zmeni  body
-podstranka na statistiky
-premazanie celej databazy ak uploadovany predmet a rok tam uz je
-uprava css
-po kliknuti na potvrdit tlacidlo sa objavi zmenit, a input je disabled
+
+skontrolovať koncovku .csv
+
+remove maring from nested table
+
+po importe poslať na admin.php s oznamom o vložení údajov. Succesdiv, čo po pár sec zmizne s animáciou
+
+už ste zadali body. ste si istý, že ich chcete zmeniť ? alebo if value is null, zobrazi sa tlacidlo zmenit, namiesto potvrdit
+
+delete osoby.csv,test.php,teamOverviewGeneratingFunctions.php
+
+uprava css{
+zarovanie contentu formularov
+
+Num input v tabulke osestrit pri resize
+
+buttons pre schvalenie
+
+sfarbenie riadkov tabulky podla procesu+ohranicenie
+
+}
+
+dat do formu requied
 
 file chooser prelozit browse do sk
 */
@@ -23,14 +43,6 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else{$language = include('../lang/svk.php');}
 
 $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
-
-/*
-
- * vypis studentov
- * js name of file after chosing
- * school year - moznosti vygenerovane by php date
- */
-
 
 ?>
 
@@ -58,16 +70,20 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
     <title>ADMIN</title>
 </head>
 
-
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"> <a class="nav-link" id="svk" href="admin.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
-                <div id="enDiv" ><a class="nav-link" id="eng" href="admin.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
+                <?php
+                if(strcmp($language['websiteLang'],"sk"))
+                    echo "<div id=\"skDiv\"  ><a class=\"nav-link\" id=\"svk\" href=\"admin.php?lang=sk\"> <img src=\"../img/sk.png\" height=\"30\" alt=\"sk\"></a></div>";
 
+                else
+                    echo "<div id=\"enDiv\"  ><a class=\"nav-link\" id=\"eng\" href=\"admin.php?lang=en\"> <img src=\"../img/uk.png\" height=\"30\" alt=\"uk\"></a></div>";
+
+                ?>
             </li>
             <li class="navbar-item">
                 <a class="nav-link" id="logout" href="logout.php"><?php echo  $language['logout']?></a>
@@ -77,31 +93,36 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
 </header>
 
-<body onload="getStatisticFromDatabase()">
+
+<body onload="getStatisticFromDatabase();getStudentDataFromDatabase()">
 
 
 
 <div class="container">
 
-    <div id="formulare">  <!--V tomto dive su formulare-->
+    <form action="csvIntoDatabase.php" method="post" id="csvImport" enctype="multipart/form-data" class="float-left col-md-6 col-sm-12 col-xs-12">
 
-    <form action="csvIntoDatabase.php" method="post" id="addResults" enctype="multipart/form-data">
-
-        <h2><?php echo $language['formHeader']; ?></h2>
+        <h2 class="text-center"><?php echo $language['formImportHeader']; ?></h2>
 
           <div class="form-inline">
 
-        <div class="form-group col-sm-2">
+        <div class="form-group col-xs-4">
 
             <label for="schoolYear"> <?php echo $language['schoolYear']; ?> </label>
             <select name="schoolYear" class="form-control" id="schoolYear">
-                <option value="2018">2018</option>
-                <option value="2019">2019</option>
+                <?php
+                for($i=0;$i<=2;$i++){
+                        $year=date("Y",strtotime("-".$i." year"));
+
+                        echo "<option value=\"".$year."\">".$year."</option>";
+                }
+
+                ?>
             </select>
 
         </div>
 
-        <div class="form-group col-sm-3">
+        <div class="form-group col-xs-4 ">
 
             <label for="subject"><?php echo $language['subjectName']; ?></label>
             <input name="subject" type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
@@ -110,11 +131,11 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
           </div>
 
-        <div class="form-inline col-sm-8">
+        <div class="form-inline">
 
-        <div class="form-group">
+        <div class="form-group col-xs-4" >
 
-            <label for="resultCSV"><?php echo $language['CSVfile']; ?></label>
+            <label  for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
                 <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="es">
@@ -124,29 +145,35 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
         </div>
 
 
-            <div class="form-group form-inline" id="separatorDiv">
+            <div class="form-group form-inline col-xs-4" id="separatorDiv">
 
             <label for="separator"><?php echo $language['separator']; ?></label>
             <select name="separator" class="form-control" id="separator">
                 <option value=";">;</option>
                 <option value=",">,</option>
-
             </select>
-                <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+
             </div>
 
+        </div>
 
+        <div class="form-group form-inline">
+
+            <button   type="submit" id="submitButton" class="btn btn-primary ">Submit</button>
 
         </div>
 
     <input type="hidden" name="permission" value="granted">
 
-
     </form>
 
-        <form action="csvexport.php" method="post" id="csvExport">
-            <div class="form-row text-center">
-                <div class="col-md-3 offset-md-3">
+
+
+        <form action="csvexport.php" method="post" id="csvExport" class="float-right col-md-6 col-sm-12 col-xs-12" >
+            <h2 class="text-center"><?php echo $language['formExportHeader']; ?></h2>
+
+            <div class="form-inline">
+                <div>
                     <select class="form-control" required name="predmet">
                         <option value="" selected disabled>Vyberte možnosť</option>
                         <?php
@@ -162,7 +189,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
                         ?>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div >
                     <select class="form-control" required name="rok">
                         <option value="" selected disabled>Vyberte možnosť</option>
                         <?php
@@ -184,30 +211,25 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             </div>
         </form>
 
-    </div>
-
     <div id="graphs">
 
-        <canvas id="pie-chart" width="400" height="100" ></canvas>
+        <canvas class="col-lg-6 col-sm-12 col-xs-12" id="studentsChart"></canvas>
 
-        <canvas id="teamsGraph" width="400" height="100" ></canvas>
+        <canvas class="col-lg-6 col-sm-12 col-xs-12" id="teamsChart" ></canvas>
 
-        <script>
-            /*
-             AJ GRAF AJ STATISTICKE UDAJE
+    </div>
 
-             vnoreny selekt
-            select ID
-from timy
-where IDpredmetu=12
+    <script>
+        /*
 
-            select IDziaka
+
+        select IDziaka
 from clenovaTimov
 where EXISTS (
-    select ID
-    from timy
-    where IDpredmetu=12
-    and timy.ID=clenovaTimov.Idtimu
+select ID
+from timy
+where IDpredmetu=12
+and timy.ID=clenovaTimov.Idtimu
 )
 
 select count(IDziaka) as vsetci,
@@ -216,11 +238,11 @@ select count(IDziaka) as vsetci,
 (SELECT count(*) from clenovaTimov where suhlas is null ) as nevyjadreni
 from clenovaTimov
 where EXISTS (
-    select ID
-    from timy
-    where IDpredmetu=12
-    and timy.ID=clenovaTimov.Idtimu
-    )
+select ID
+from timy
+where IDpredmetu=12
+and timy.ID=clenovaTimov.Idtimu
+)
 
 
 select count(ID) as vsetci,
@@ -232,114 +254,100 @@ where IDpredmetu=12
 
 
 
-             */
+         */
 
-            function getStatisticFromDatabase() {
+        function getStatisticFromDatabase() {
 
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-
-                        /*
-                       $statistic->allTeams=$row['vsetci'];
-    $statistic->closedTeams=$row['suhlasiaci'];
-    $statistic->undexpresseBydAdmin=$row['nesuhlasiaci'];
-    $statistic->unexpressedByStudents=$row['nevyjadreni'];
-                        */
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
 
 
-                        var myObj = JSON.parse(this.responseText);
 
-                        /*
-                        document.getElementById("test").innerText=
-                            myObj.allStudents+','+myObj.agreedStudents+','+myObj.disagreedStudents+','+myObj.unexpressedStudents+
-                        ','+myObj.allTeams+','+myObj.closedTeams+','+myObj.undexpresseBydAdmin+','+myObj.unexpressedByStudents;
-                       */
 
-                        crateChart("pie-chart","Študenti","Súhlasiaci","Nesúhlasiaci","Nevyjadrený",
-                            myObj.agreedStudents,myObj.disagreedStudents,myObj.unexpressedStudents);
+                    var myObj = JSON.parse(this.responseText);
 
-                        crateChart("teamsGraph","Tímy","Úspešne uzavreté","Neodsúhlasené adminom","Nevyjadrení študenti",
-                            myObj.closedTeams,myObj.undexpresseBydAdmin,myObj.unexpressedByStudents);
+                    /* width="400" height="100"
+                    document.getElementById("test").innerText=
+                        myObj.allStudents+','+myObj.agreedStudents+','+myObj.disagreedStudents+','+myObj.unexpressedStudents+
+                    ','+myObj.allTeams+','+myObj.closedTeams+','+myObj.undexpresseBydAdmin+','+myObj.unexpressedByStudents;
+                   */
 
-                        //   placeMarkers(myObj)
-/*
-                        if(myObj.lat!=null) // ak response nie je null, vykreslim markery
-                            placeMarkers(myObj);
-*/
+                    let studentAxioms;
+                    let teamAxioms;
 
+                    if(!document.documentElement.lang.localeCompare("sk")){
+                        studentAxioms=["Študenti", "Súhlasiaci", "Nesúhlasiaci", "Nevyjadrení"];
+                        teamAxioms=["Tímy", "Úspešne uzavreté", "Zatiaľ neschválené", "Nevyjadrené"];
                     }
-                };
-                xmlhttp.open("GET", "getStatisticFromDatabase.php", true);
-                xmlhttp.send();
-            }
+                    else {
+                        studentAxioms=["Students", "In agreement", "In disagreement", "Unexpressed"];
+                        teamAxioms=["Teams", "Successfully closed", "Not approved yet", "Unexpressed"];
+                    }
 
 
-            function crateChart(chartCanvas,title,axis1,axis2,axis3,data1,data2,data3) {
-                new Chart(document.getElementById(chartCanvas), {
-                    type: 'pie',
-                    data: {
-                        labels: [axis1,axis2,axis3],
-                        datasets: [{
-                            label: "Population (millions)",
-                            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                            data: [data1,data2,data3]
-                        }]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: title
+                    crateChart("studentsChart",studentAxioms,
+                        myObj.agreedStudents,myObj.disagreedStudents,myObj.unexpressedStudents);
+
+                    crateChart("teamsChart",teamAxioms,
+                        myObj.closedTeams,myObj.undexpresseBydAdmin,myObj.unexpressedByStudents);
+
+
+                }
+            };
+            xmlhttp.open("GET", "getStatisticFromDatabase.php", true);
+            xmlhttp.send();
+        }
+
+
+        function crateChart(chartCanvas,axioms,data1,data2,data3) {
+            new Chart(document.getElementById(chartCanvas), {
+                type: 'pie',
+                data: {
+                    labels: [axioms[1],axioms[2],axioms[3]],
+                    datasets: [{
+                        label: "Population (millions)",
+                        backgroundColor: ["#7DF780", "#B51B12","#F0B705"],
+                        data: [data1,data2,data3]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: axioms[0]
+                    }
+                }
+            });
+        }
+        /*
+                    new Chart(document.getElementById("pie-chart"), {
+                        type: 'pie',
+                        data: {
+                            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                            datasets: [{
+                                label: "Population (millions)",
+                                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                data: [2478,5267,734,784,433]
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Predicted world population (millions) in 2050'
+                            }
                         }
-                    }
-                });
-            }
-/*
-            new Chart(document.getElementById("pie-chart"), {
-                type: 'pie',
-                data: {
-                    labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-                    datasets: [{
-                        label: "Population (millions)",
-                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                        data: [2478,5267,734,784,433]
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Predicted world population (millions) in 2050'
-                    }
-                }
-            });
+                    });
 
-            new Chart(document.getElementById("teamsGraph"), {
-                type: 'pie',
-                data: {
-                    labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-                    datasets: [{
-                        label: "Population (millions)",
-                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                        data: [2478,5267,734,784,433]
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Predicted world population (millions) in 2050'
-                    }
-                }
-            });
-*/
+                  */
 
-        </script>
-
-    </div>
+    </script>
 
 
-    <div id="test">p</div>
+    <!--  <div id="test">p</div> -->
 
-    <h2><?php echo $language['teamOverview']; ?></h2>
+
+    <div>
+    <h2 class="text-center"><?php echo $language['teamOverview']; ?></h2>
 
 
     <table class="table">
@@ -355,7 +363,7 @@ where IDpredmetu=12
         <tbody>
 
         <?php
-        $sql = "SELECT * FROM timy";
+        $sql = "SELECT * FROM timy order by cisloTimu";
         $result = $conn->query($sql);
 
         $GLOBALS['generatedID']=0; // toto ID je pridelovane inputom vo vyslednej tabulke
@@ -446,10 +454,12 @@ where IDpredmetu=12
                                                     // vrati disabled ak sa tim este nedohodol
 
         echo "<tr class=\"overview\">";
-        echo "<td>Rozhodnutie administrátora</td>";
-        echo "<td colspan=\"2\">";          // posiela request na zmenu stplca schvaleneAdminom v dbs. Success button posle 1. danger button 0
-        echo "<button type=\"button\"  class=\"btn btn-success\" onclick='changeAdminAgreementInDatabase($teamID,1)' $stateOfButtons >".$GLOBALS['language']['agree']."</button>";
-        echo "<button type=\"button\"  class=\"btn btn-danger\"  onclick='changeAdminAgreementInDatabase($teamID,0)' $stateOfButtons >".$GLOBALS['language']['disagree']."</button>";
+        echo "<td>".$GLOBALS['language']['approval']."</td>";
+        echo "<td  colspan=\"2\">";          // posiela request na zmenu stplca schvaleneAdminom v dbs. Success button posle 1. danger button 0
+        echo "<div class=\"text-center\">";
+        echo "<button type=\"button\"  class=\"btn btn-success mr-5  \" onclick='changeAdminAgreementInDatabase($teamID,1)' $stateOfButtons >".$GLOBALS['language']['agree']."</button>";
+        echo "<button type=\"button\"  class=\"btn btn-danger \"  onclick='changeAdminAgreementInDatabase($teamID,0)' $stateOfButtons >".$GLOBALS['language']['disagree']."</button>";
+        echo "</div>";
         echo "</td>";
         echo "</tr>";
 
@@ -457,7 +467,7 @@ where IDpredmetu=12
 
     function teamTable($teamID){
 
-                    $sql = "SELECT studenti.ID as id, email, meno, body, suhlas
+                    $sql = "SELECT clenovaTimov.ID as id, email, meno, body, suhlas
         FROM studenti, clenovaTimov
         WHERE studenti.ID=clenovaTimov.IDziaka and IDtimu='".$teamID."'";
                     $result = $GLOBALS['conn']->query($sql);
@@ -469,7 +479,7 @@ where IDpredmetu=12
         echo "<table class=\"table\">";
         echo "<thead><tr>";
 
-        echo "<td>Email </td><td>Meno </td><td>Body </td><td>Suhlas </td>";
+        echo "<td>Email </td><td>".$GLOBALS['language']['name']."</td><td>".$GLOBALS['language']['points']."</td><td>".$GLOBALS['language']['agreement']."</td>";
 
         echo "</tr></thead>";
 
@@ -479,13 +489,16 @@ where IDpredmetu=12
 
         echo "<tr>";
 
-        echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td>".printPoints($row['body'])."</td>";
+     //   echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td >".printPoints($row['body'])."</td>";
+        echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td id='pointsOfstudent".$row['id']."'>'pointsOfstudent".$row['id']."'</td>";
 
+        echo "<td id='agreementIconOfstudent".$row['id']."'></td>";
+/*
         // treba spravit funkciu na rozhodnutie o pouziti agree obrazku
         echo "<td>
        <img alt=\"palec\" class=\"agreementIcon\" src=\"../teamOverviewIcons/".agreementIcon($row['suhlas'])."\"> 
              </td>";
-
+*/
         echo "</tr>";
 
     }
@@ -493,7 +506,18 @@ where IDpredmetu=12
         echo "</tbody></table></td>";
 
         echo "</tr>";
+/*
+ grafy
 
+ server bude posielat json array kazdych 10 sec.
+v nom bude id(clenovia timov), body, suhlas
+
+aplikacia to bude vykreslovat v cykle pre kazdy zaznam v tabulke
+
+v tabulke staci ked bude id. nic viac netreba --------------------------------------------------------------------------------------------
+
+
+  */
 
     }
 
@@ -506,17 +530,18 @@ where IDpredmetu=12
 
      */
 
-
         return
 
             "<form class=\"form-inline\">".
 
             "<button  type=\"button\" class=\"btn btn-light\" onclick='changeTeamPointsInDatabase($teamID,".$GLOBALS['generatedID'].")'>".$GLOBALS['language']['confirm']."</button>".
 
-            "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" placeholder=\" ".$teamPoints."\">".
+            "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" value=\"".$teamPoints."\">".
 
 
             "</form>";
+            // Body su v placeholderi. Nie predvyplnene
+        // "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" placeholder=\" ".$teamPoints."\">".
 
     }
 
@@ -590,7 +615,91 @@ where ID='".$teamID."'";
 
     ?>
 
+    </div>
+
     <script>
+        /*
+        $(document).ready(function(){
+            setInterval(function(){
+                getStatisticFromDatabase();
+                getStudentDataFromDatabase()
+                //$("#graphs").load('admin.php')
+            }, 2000);
+        });*/
+    </script>
+
+    <script>
+
+
+        function getStudentDataFromDatabase() {
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+
+
+
+                    var myObj = JSON.parse(this.responseText);
+
+                    /* width="400" height="100"
+                    document.getElementById("test").innerText=
+                        myObj.allStudents+','+myObj.agreedStudents+','+myObj.disagreedStudents+','+myObj.unexpressedStudents+
+                    ','+myObj.allTeams+','+myObj.closedTeams+','+myObj.undexpresseBydAdmin+','+myObj.unexpressedByStudents;
+                   */
+
+                    updateRows(myObj);
+
+                }
+            };
+            xmlhttp.open("GET", "getStudentDataFromDatabase.php", true);
+            xmlhttp.send();
+        }
+
+        function updateRows(jsonData) { // zavola placeMarker n krat
+
+            for(let i=0; i<jsonData.idArray.length;i++){ // dlzka pola
+
+                updateDataInRow(jsonData.idArray[i], jsonData.pointArray[i],jsonData.agreementArray[i]) // suradnice su string. nutna kovnerzia na Numeric data type
+
+            }
+        }
+
+        function updateDataInRow(id, points, agreement){
+
+            $("#pointsOfstudent"+id).html(points);
+
+            appendAgreementPicture(id,agreement);
+
+        }
+    // do stlpca pre suhlas appenduje obrazok podla suhlasu clena
+        function appendAgreementPicture(id, agreement){
+
+            let iconName;
+            let agreementPicture=document.createElement("img");
+
+
+            if(!agreement)  // vybera vhodnu ikonu podla suhlasu
+                iconName="questionMark";
+
+            else if(!agreement.localeCompare("1"))
+                iconName="studentAgree";
+
+            else if(!agreement.localeCompare("0"))
+                iconName="studnetDisagree";
+
+
+
+            agreementPicture.src="../teamOverviewIcons/"+iconName+".png";
+           // agreementPicture.src="../teamOverviewIcons/studnetDisagree.png";
+            agreementPicture.alt="agreement icon";
+            agreementPicture.classList.add("agreementIcon");
+
+            document.getElementById("agreementIconOfstudent"+id).appendChild(agreementPicture);
+
+
+        }
+
 
 
         function changeAdminAgreementInDatabase(teamID,agreement){
@@ -600,9 +709,6 @@ where ID='".$teamID."'";
                 teamID: teamID,
                 agreement: agreement // id inputu. Jedinenecne pre kazdu tabulku
 
-            }, function (data) {
-
-                $("#test").html(data); // data su udaje poslane echom z php scriptu
             })
         }
 
@@ -613,26 +719,8 @@ where ID='".$teamID."'";
                 teamID: teamID,
                 points: $("#pointsInput"+inputID).val() // id inputu. Jedinenecne pre kazdu tabulku
 
-            }, function (data) {
-
-                $("#test").html(data); // data su udaje poslane echom z php scriptu
             })
         }
-
-
-        //   $(document).ready(function() {
-
-/*
-        $(document).ready(function(){
-
-            $('.header').click(function () {
-                //  $(this).find('span').text(function(_, value){return value=='-'?'+':'-'});
-                $(this).nextUntil('tr.header').slideToggle(100); // or just use "toggle()"
-            });
-
-        });
-*/
-        //});
 
     </script>
 

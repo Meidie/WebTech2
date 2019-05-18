@@ -1,14 +1,14 @@
-/* ADMIN PAGE */
+/* ADMIN PAGE *//*
 :lang(en) > q { quotes: '\201C' '\201D' '\2018' '\2019'; }
-
+*/
 .form-group{margin: 10px}
 
 .form-control{margin: 10px}
-
+/*
 #resultCSV{
     width: 200px;
 }
-
+*/
 #submitButton{
     width: 100px;
 }
@@ -17,26 +17,16 @@
 }
 
 #graphs{
-    height: 400px;
-}
-/*
+ /*   height: 400px;
+    float: bottom;*/
 
-#addResults{
-    float: left;
+    clear: left;
 }
-
-#csvExport{
-    float: right;
-}
-
-*/
 
 
 #formulare{
-    background-color: #E3E3E3;
+    background-color: aquamarine;
 }
-
-
 
 #separatorDiv{
     margin-left: 20px;
@@ -48,22 +38,28 @@ es: "Elegir"
 );
  */
 
-#addResults{
-    background-color: #9149F3;
-}
 
+/*
 #subject{
     position: relative;
     float: right;
-}
+}*/
 /* ------ Grafy*/
+/*
+#csvImport{
+    float: left;
+}
 
-#pie-chart{
+#csvExport{
+    float: right;
+}
+*/
+#studentsChart{
     float: left;
 
 }
 
-#teamsGraph{
+#teamsChart{
     float: right;
 }
 
@@ -85,24 +81,27 @@ es: "Elegir"
 
 }
 
+
+
 /* ----------------------- */
 body {
     color: #fff;
-    background: #3598dc;
+    background: #D8D8D8;
 }
 
 header{
     background-color: #222;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
- h1{
-     margin-left: 40px;
- }
+h1{
+    margin-left: 40px;
+}
+/*
 #svk{
 
-  /*  background-image: url("../img/logo.png");*/
+    background-image: url("../img/logo.png");
 }
-
+*/
 .form-control {
     min-height: 41px;
     background: #FAFAFA;
@@ -157,7 +156,7 @@ header{
 .or-seperator {
     margin: 20px 0 10px;
     text-align: center;
-    border-top: 1px solid #ccc;
+    border-top: 2px solid #ccc;
 }
 .or-seperator i {
     padding: 0 10px;
@@ -165,6 +164,10 @@ header{
     position: relative;
     top: -11px;
     z-index: 1;
+}
+#subjectSeparator{
+    width:500px;
+    border-top: 1px solid #3598dc;
 }
 .avatar {
     margin: 0 auto ;
@@ -193,4 +196,20 @@ header{
 }
 h2{
     color: #222222;
+}
+#caption{
+    margin-top: 50px;
+    color: #222222;
+}
+#data{
+    margin-top: 50px;
+    margin-left: 100px;
+    color: #222222;
+    font-size: 18px;
+}
+.color-black{
+    background-color: #222;
+}
+.text-white{
+    color: white ;
 }

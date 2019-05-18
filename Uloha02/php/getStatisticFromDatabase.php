@@ -10,7 +10,7 @@ from clenovaTimov
 where EXISTS (
     select ID
     from timy
-    where IDpredmetu=12
+    where IDpredmetu = (SELECT max(ID) from predmety)
     and timy.ID=clenovaTimov.Idtimu
     )";
 
@@ -30,10 +30,10 @@ if ($result->num_rows > 0){
 
     $sql = "select count(ID) as vsetci,
 (SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom=true) as uzavrete,
-(SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom is null) as nevyjadreneAdminom,
+(SELECT COUNT(*) from timy where schvaleneKapitanom is not null and schvaleneAdminom is null) as nevyjadreneAdminom,
 (SELECT COUNT(*) from timy where schvaleneKapitanom is null and schvaleneAdminom is null) as nevyjadreneStudentmi
 from timy
-where IDpredmetu=12";
+where IDpredmetu = (SELECT max(ID) from predmety)"; // vypise statistiky posledneho pridatenho predmetu
 
     $result = $conn->query($sql);
 

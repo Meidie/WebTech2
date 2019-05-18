@@ -7,9 +7,20 @@ osetrit vybratie suboru, co nie je csv
 zabezpecit proti droptable, etc
 */
 
+
+preventUploadingNotCSVfile($_FILES['csvPath']['name']);
+function preventUploadingNotCSVfile($fileName){
+
+    $fileName=explode('.',$fileName);
+
+    if(strcmp($fileName[1],"csv"))
+    header("Location: admin.php");
+
+}
+
+
     if(strcmp($_POST['permission'],"granted")) // ak sem neprisiel cez formular, je poslany na index.php
         header("Location: ../../index.php");
-
 
 /*
  $_POST['schoolYear']='2019';
@@ -19,9 +30,33 @@ zabezpecit proti droptable, etc
 
  // PREDMET SA MUSI PRIDAT ESTE PRED CYKLOM INAK BY SA ZAPISAL DO TABULKY VZDY PRI PRIDANI NOVEHO STUDENTA
 // sled pridavania Studneti, predmet, timy, clenovia timov
-
+/*
 $GLOBALS['conn']=$conn; // global conn pouzitelny vo funkciach
 
+preventDupliciteReccords(); // zbehne vzdy na zaciatku
+
+
+function preventDupliciteReccords()
+{
+
+    $sql = "SELECT IDpredmetu
+from timy,predmety
+where IDpredmetu=predmety.ID
+and rok='" . $_POST['schoolYear'] . "' and nazov='" . $_POST['subject'] . "'";
+
+    $result = $GLOBALS['conn']->query($sql);
+    // Ak existuje zaznam s rovnakym predmetom a rokom,
+    if ($result->num_rows > 0) {
+
+        $row = $result->fetch_assoc();
+
+        $sql = "DELETE FROM predmety WHERE ID='".$row['IDpredmetu']."'"; // vymaze predmet z databazy
+                                                                    // typ padom aj prisluchajuce udaje v tabulke timy a clenovia timov
+        $GLOBALS['conn']->query($sql);
+
+    }
+
+}
 
 $file = fopen($_FILES['csvPath']['tmp_name'], 'r');
 
