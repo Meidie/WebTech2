@@ -1,9 +1,11 @@
 <?php
 include "congif.php";
 session_start();
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/sk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('lang/eng.php');
+}else{$language = include('lang/sk.php');}
 if (isset($_SESSION['tim'])){
     $tim = $_SESSION['tim'];
-//    unset($_POST['tim']);
     //TODO doriešiť vyhľadávanie pomocou ID prihláseného uživateľa
 } else header("Location: vyberTimu.php");
 if (isset($_POST['body']) && isset($_POST['clenId'])){
@@ -17,7 +19,7 @@ if (isset($_POST['body']) && isset($_POST['clenId'])){
 }
 ?>
 <!doctype html>
-<html lang="sk">
+<html lang="<?php echo $language['websiteLang']?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -38,23 +40,23 @@ if (isset($_POST['body']) && isset($_POST['clenId'])){
 <body>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
+        <a class="navbar-brand" href="../index.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"><a class="nav-link" id="svk" href=""> <img src="img/sk.png" height="30"
+                <div id="skDiv"><a class="nav-link" id="svk" href="kapitanNahlad.php?lang=sk"> <img src="img/sk.png" height="30"
                                                                                             alt="sk"></a></div>
-                <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
+                <div id="enDiv"><a class="nav-link" id="eng" href="kapitanNahlad.php?lang=en"> <img src="img/uk.png" height="30"
                                                                                             alt="uk"></a></div>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="team" href="vyberTimu.php">Výber Tímu</a>
+                <a class="nav-link" id="team" href="vyberTimu.php"><?php echo $language['VyberTimu']?></a>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="team" href="student.php">Prehľad bodov</a>
+                <a class="nav-link" id="team" href="student.php"><?php echo $language['PrehladBodov']?></a>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php">Logout</a>
+                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout']?></a>
             </li>
             <?php
             if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
@@ -101,13 +103,13 @@ if (isset($_POST['body']) && isset($_POST['clenId'])){
         }
     ?>
     <h2 class="text-center"><?php echo $nazov_predmetu;?> </h2>
-    <h4 class="text-center">Pridelené body: <?php echo $body_tim?></h4>
-    <h4 class="text-center">Zvyšné body: <span id="zvysne_body"><?php echo $zvysne_body?></span></h4>
+    <h4 class="text-center"><?php echo $language['PridBody'].":".  $body_tim?></h4>
+    <h4 class="text-center"><?php echo $language['ZvysBody']?>: <span id="zvysne_body"><?php echo $zvysne_body?></span></h4>
     <table class="table table-striped">
         <thead class="text-center">
         <tr>
-            <th>Meno</th>
-            <th>Body</th>
+            <th><?php echo $language['Meno']?></th>
+            <th><?php echo $language['Body']?></th>
             <th></th>
         </tr>
         </thead>
@@ -125,9 +127,9 @@ if (isset($_POST['body']) && isset($_POST['clenId'])){
                 $result2 = $stmt->get_result();
                 if ($result2->num_rows > 0) {
                     while ($row2 = $result2->fetch_assoc()) {
-                        echo '<form onchange="checkZvysok()" action="HelloWorld.php" method="post"><input type="hidden" id="clenId" name="clenId" value="' . $row["IDziaka"] . '"><input type="hidden" id="tim" name="tim" value="' . $tim . '"';
-                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $body_tim . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='Potvrdiť'></td></tr>");
-                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $body_tim . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='Potvrdiť'></td></tr>");
+                        echo '<form onchange="checkZvysok()" action="kapitanNahlad.php" method="post"><input type="hidden" id="clenId" name="clenId" value="' . $row["IDziaka"] . '"><input type="hidden" id="tim" name="tim" value="' . $tim . '"';
+                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $zvysne_body . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='".$language['Submit']."'></td></tr>");
+                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td><input class='form-control col-md-6 offset-md-3' id='" . $row['IDziaka'] . "' name='body' type='number' min='0' max='" . $zvysne_body . "' value='" . $row['body'] . "' onblur='checkBody(this.id)'></td><td><input type='submit' class='btn btn-success conf' value='".$language['Submit']."'></td></tr>");
                         echo '</form>';
                     }
                 }
@@ -142,7 +144,7 @@ if (isset($_POST['body']) && isset($_POST['clenId'])){
             let clenoveBody = document.getElementById(id).value;
             if(celkoveBody-clenoveBody <0) {
                 document.getElementById(id).value = celkoveBody;
-                alert("zle body");
+                alert("Zadali ste neplatnú hodnotu bodov.");
             }
         }
     </script>

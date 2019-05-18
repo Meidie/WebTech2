@@ -1,5 +1,11 @@
+<?php
+session_start();
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/sk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('lang/eng.php');
+}else{$language = include('lang/sk.php');}
+?>
 <!doctype html>
-<html lang="sk">
+<html lang="<?php echo $language['websiteLang']?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -15,40 +21,40 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <title>Vyber timu</title>
+    <title><?php echo $language['VyberTitle']?></title>
 </head>
 <body>
 <?php
 include "congif.php";
 session_start();
-//TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie
+//TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie!!!!!
 $_SESSION = array();
 ?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
+        <a class="navbar-brand" href="kapitanNahlad.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"><a class="nav-link" id="svk" href=""> <img src="img/sk.png" height="30"
-                                                                                            alt="sk"></a></div>
-                <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
-                                                                                            alt="uk"></a></div>
+                <div id="skDiv"><a class="nav-link" id="svk" href="vyberTimu.php?lang=sk"> <img src="img/sk.png" height="30"
+                                                                           alt="sk"></a></div>
+                <div id="enDiv"><a class="nav-link" id="eng" href="vyberTimu.php?lang=en"> <img src="img/uk.png" height="30"
+                                                                           alt="uk"></a></div>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php">Logout</a>
+                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout']?></a>
             </li>
             <?php
 
-            if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
+            if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 
                 echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
                 echo '<script>document.getElementById("enDiv").style.display = "";</script>';
-            }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){
+            } else if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
 
                 echo '<script>document.getElementById("skDiv").style.display = "";</script>';
                 echo '<script>document.getElementById("enDiv").style.display = "none";</script>';
-            }else{
+            } else {
 
                 echo '<script>document.getElementById("skDiv").style.display = "none";</script>';
                 echo '<script>document.getElementById("enDiv").style.display = "";</script>';
@@ -62,31 +68,32 @@ $_SESSION = array();
         <div class="row text-center">
             <div class="col-md-6 offset-md-3">
                 <select class="form-control" required name="tim">
-                    <option value="" selected disabled>Vyberte možnosť</option>
+                    <option value="" selected disabled><?php echo $language['Select']?></option>
                     <?php
                     //TODO treba ešte doplniť IDziaka podľa prihláseného uživateľa
                     $_SESSION['uziv'] = 86247;
-                    $sql = "SELECT ID FROM timy WHERE ID = (SELECT IDtimu FROM clenovaTimov WHERE IDziaka = ".$_SESSION['uziv'].");";
+                    $sql = "SELECT IDtimu FROM clenovaTimov WHERE IDziaka = " . $_SESSION['uziv'] . ";";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
-                            $sql2 = "SELECT nazov FROM predmety where ID = (SELECT IDpredmetu from timy where ID = " . $row['ID'] . ")";
+                            $sql2 = "SELECT nazov FROM predmety where ID = (SELECT IDpredmetu from timy where ID = " . $row['IDtimu'] . ")";
                             $stmt2 = $conn->prepare($sql2);
                             $stmt2->execute();
                             $result2 = $stmt2->get_result();
                             if ($result2->num_rows > 0 && $row2 = $result2->fetch_assoc()) {
-                                print ("<option value='" . $row['ID'] . "'>" . $row2['nazov'] . "</option>");
+                                print ("<option value='" . $row['IDtimu'] . "'>" . $row2['nazov'] . "</option>");
                             }
                         }
                     }
                     ?>
                 </select>
-                <input class='btn btn-success' type='submit' value='Submit'>
+                <input class='btn btn-success' type='submit' value='<?php echo $language['Submit']?>'>
             </div>
         </div>
     </form>
+
 </div>
 </body>
 </html>

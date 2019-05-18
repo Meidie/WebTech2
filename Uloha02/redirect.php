@@ -9,7 +9,7 @@ $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 if($row['jeKapitan'] == 1) {
     $_SESSION['kapitan'] = 1;
-    header("Location: HelloWorld.php");
+    header("Location: kapitanNahlad.php");
 }
 else{
     $_SESSION['kapitan'] = 0;

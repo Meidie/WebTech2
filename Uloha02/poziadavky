@@ -1,0 +1,11 @@
+- V niektorých súboroch sú TODO komentáre, ktoré označujú časti kódu ktoré treba upraviť resp. veci čo som používal kvôli simulácií nejakých vecí
+
+Odhlasovanie:
+- na stránkach sú hyperlinky na logout treba len linknúť na logout page
+
+Prihlásenie:
+- pre využívanie funkcií som do session spravil premennú "uziv" v ktorej je uložené ID študenta podľa databázy použitej v našej úlohe, export priložený
+
+- neboli použité žiadne PHP knižnice iba Bootstrap 4 pre CSS
+
+- dúfam že som na nič nezabudol v prípade potreby ma kontaktujte

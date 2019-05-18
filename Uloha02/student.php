@@ -1,6 +1,15 @@
 <?php
 session_start();
 include "congif.php";
+if (isset($_SESSION['tim'])){
+    $tim = $_SESSION['tim'];
+    //TODO doriešiť vyhľadávanie pomocou ID prihláseného uživateľa ak to je riesene inak ako cez session
+} else header("Location: vyberTimu.php");
+
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/sk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('lang/eng.php');
+}else{$language = include('lang/sk.php');}
+
 if(isset($_POST['suhlas'])){
     $sql = "UPDATE clenovaTimov SET suhlas = 1 where IDtimu = ".$_SESSION['tim']." AND IDziaka = ".$_SESSION['uziv'].";";
     $stmt = $conn->prepare($sql);
@@ -15,11 +24,11 @@ if(isset($_POST['suhlas'])){
         $sql = "update timy set schvaleneKapitanom = 1 where ID = ".$_SESSION['tim'].";";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-    } else echo "Niekto ešte nesúhlasí";
+    }
 }
 ?>
 <!doctype html>
-<html lang="sk">
+<html lang="<?php echo $language['websiteLang']?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -67,21 +76,21 @@ if ($result->num_rows > 0) {
 ?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="HelloWorld.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
+        <a class="navbar-brand" href="../index.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"><a class="nav-link" id="svk" href=""> <img src="img/sk.png" height="30"
+                <div id="skDiv"><a class="nav-link" id="svk" href="student.php?lang=sk"> <img src="img/sk.png" height="30"
                                                                            alt="sk"></a></div>
-                <div id="enDiv"><a class="nav-link" id="eng" href=""> <img src="img/uk.png" height="30"
+                <div id="enDiv"><a class="nav-link" id="eng" href="student.php?lang=en"> <img src="img/uk.png" height="30"
                                                                            alt="uk"></a></div>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="team" href="vyberTimu.php">Výber Tímu</a>
+                <a class="nav-link" id="team" href="vyberTimu.php"><?php echo $language['VyberTimu']?></a>
             </li>
             <?php
             if($_SESSION['kapitan']==1){
-                print ('<li class="navbar-item"><a class="nav-link" id="kapitan" href="HelloWorld.php">Prehľad kapitána</a></li>');
+                print ('<li class="navbar-item"><a class="nav-link" id="kapitan" href="kapitanNahlad.php">'.$language['Kapitan'].'</a></li>');
             }
             if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 
@@ -97,40 +106,43 @@ if ($result->num_rows > 0) {
                 echo '<script>document.getElementById("enDiv").style.display = "";</script>';
             }
             ?>
-            <!--TODO pri logout vymazat vsetky info zo sessio-->
+            <!--TODO pri logout vymazat vsetky info zo session!!!!-->
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php">Logout</a>
+                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout']?></a>
             </li>
         </ul>
     </nav>
 </header>
 <div class="container">
     <h2 class="text-center"><?php echo $nazov_predmetu; ?> </h2>
-    <h4 class="text-center">Pridelené body: <?php echo $body_tim ?></h4>
+    <h4 class="text-center"><?php echo $language['PridBody']?>: <?php echo $body_tim ?></h4>
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Meno</th>
-            <th>Body</th>
+            <th><?php echo $language['Meno']?></th>
+            <th><?php echo $language['Body']?></th>
+            <th><?php echo $language['StavSuhlasu']?></th>
         </tr>
         </thead>
         <tbody>
         <?php
-        $sql = "SELECT IDziaka,jeKapitan,body FROM clenovaTimov WHERE IDtimu =" . $tim . ";";
+        $sql = "SELECT IDziaka,jeKapitan,body,suhlas FROM clenovaTimov WHERE IDtimu =" . $tim . ";";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $sql = "SELECT meno FROM studenti where ID = " . $row[IDziaka] . ";";
+                $sql = "SELECT meno FROM studenti where ID = " . $row['IDziaka'] . ";";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $result2 = $stmt->get_result();
+                if($row['suhlas']==1) $stav_suhlasu = $language['Suhlasi'];
+                else $stav_suhlasu = $language['Nesuhlasi'];
                 if ($result2->num_rows > 0) {
                     while ($row2 = $result2->fetch_assoc()) {
                         echo '<input type="hidden" id="clenId" name="clenId" value="' . $row["IDziaka"] . '"><input type="hidden" id="tim" name="tim" value="' . $tim . '"';
-                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td>" . $row['body'] . "</td></tr>");
-                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td>" . $row['body'] . "</td></tr>");
+                        if ($row['jeKapitan'] == 1) print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . " (C)</td><td>" . $row['body'] . "</td><td>".$stav_suhlasu."</td></tr>");
+                        else print("<tr id='" . $row['IDziaka'] . "'><td>" . $row2['meno'] . "</td><td>" . $row['body'] . "</td><td>".$stav_suhlasu."</td></tr>");
                     }
                 }
             }
@@ -146,10 +158,10 @@ if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if($row['suhlas']!=1){
             print('<form onsubmit="return  confirm(\'Chcete odsúhlasiť rozdelenie bodov? Táto akcia sa nedá vrátiť.\')" action="student.php" id="frm" method="post">
-            <input type="submit"  class="btn btn-success" name="suhlas" value="Súhlasím s bodmi">
+            <input type="submit"  class="btn btn-success" name="suhlas" value="'.$language['Submit'].'">
             </form>');
         }
-        else print ("<h4 class='text-center'>Body ste už odsúhlasili</h4>");
+        else print ("<h4 class='text-center'>".$language['Odsuhlasene']."</h4>");
     ?>
 </div>
 </body>
