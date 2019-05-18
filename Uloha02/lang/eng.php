@@ -20,5 +20,6 @@ return array(
     "StavSuhlasu"=>"Consent status",
     "Suhlasi" =>"agree",
     "Nesuhlasi"=>"disagree",
-    "Odsuhlasene" => "You already agree with distribution of points"
+    "Nevyjadril"=>"no answer",
+    "Odsuhlasene" => "You already decided"
 );

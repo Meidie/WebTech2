@@ -1,15 +1,15 @@
 body {
     color: #fff;
-    background: #3598dc;
+    background: #D8D8D8;
 }
 
 header{
     background-color: #222;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
- h1{
-     margin-left: 40px;
- }
+h1{
+    margin-left: 40px;
+}
 #svk{
 
     background-image: url("../img/logo.png");
@@ -69,7 +69,7 @@ header{
 .or-seperator {
     margin: 20px 0 10px;
     text-align: center;
-    border-top: 1px solid #ccc;
+    border-top: 2px solid #ccc;
 }
 .or-seperator i {
     padding: 0 10px;
@@ -77,6 +77,10 @@ header{
     position: relative;
     top: -11px;
     z-index: 1;
+}
+#subjectSeparator{
+    width:500px;
+    border-top: 1px solid #3598dc;
 }
 .avatar {
     margin: 0 auto ;
@@ -105,4 +109,24 @@ header{
 }
 h2{
     color: #222222;
+}
+#caption{
+    margin-top: 50px;
+    color: #222222;
+}
+#data{
+    margin-top: 50px;
+    margin-left: 100px;
+    color: #222222;
+    font-size: 18px;
+}
+.color-black{
+    background-color: #222;
+}
+.text-white{
+    color: white ;
+}
+
+body{
+    color: black;
 }

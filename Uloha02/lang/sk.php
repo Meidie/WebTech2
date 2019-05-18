@@ -20,5 +20,6 @@ return array(
     "StavSuhlasu"=>"Stav súhlasu",
     "Suhlasi" =>"súhlasí",
     "Nesuhlasi"=>"nesúhlasí",
-    "Odsuhlasene" => "Body ste už odsúhlasili"
+    "Nevyjadril"=>"nevyjadril",
+    "Odsuhlasene" => "Už ste sa vyjadrili"
 );
