@@ -5,7 +5,8 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('Login/lan
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('Login/lang/eng.php');
 }else{$language = include('Login/lang/svk.php');}
 
-if(isset($_SESSION['loggedIn'])){header('Location: Uloha01/php/user_main.php?lang='.$language['websiteLang']);}
+if(isset($_SESSION['loggedIn'])){header('Location: Uloha01/php/user_main.php?lang='.$language['websiteLang']); exit();}
+else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.php?lang='.$language['websiteLang']); exit();}
 ?>
 
 <!DOCTYPE html>

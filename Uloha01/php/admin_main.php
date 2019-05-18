@@ -5,7 +5,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
+if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 ?>
 
@@ -27,7 +27,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
     <link rel="stylesheet" type="text/css" href="../css/style.css">
 
-    <title><?php echo $language['titleMain']?></title>
+    <title><?php echo $language['titleAdminMain']?></title>
 </head>
 <body>
 
@@ -39,16 +39,16 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 <!--<h1 class="text-white"></h1>-->
             </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+                <a class="nav-link" href="admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
-                <div id="skDiv"> <a class="nav-link" id="svk" href="user_main.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
-                <div id="enDiv" ><a class="nav-link" id="eng" href="user_main.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
+                <div id="skDiv"> <a class="nav-link" id="svk" href="admin_main.php?lang=sk"> <img src="../img/sk.png" height="30" alt="sk"></a></div>
+                <div id="enDiv" ><a class="nav-link" id="eng" href="admin_main.php?lang=en"> <img src="../img/uk.png" height="30" alt="uk"></a></div>
                 <?php
 
                 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){
@@ -76,38 +76,15 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 <div class="container">
 
     <div id="caption">
-        <h2><?php echo $language['h2main']?></h2>
+        <h2>ADMIN</h2>
         <div class="or-seperator"></div>
     </div>
-   <div id="data">
-
-       <table style="margin-top: 50px">
-           <tbody>
-           <tr>
-               <th class="" style="width: 200px"><?php echo $language['name']?></th>
-               <td><?php echo $_SESSION['name']; ?></td>
-           </tr>
-           <tr>
-               <th class="" style="width: 200px"><?php echo $language['surname']?></th>
-               <td><?php echo $_SESSION['lastName']; ?></td>
-           </tr>
-           <tr>
-               <th class="" style="width: 200px"><?php echo $language['id']?></th>
-               <td><?php echo $_SESSION['id']; ?></td>
-           </tr>
-           <tr>
-               <th class="" style="width: 200px"><?php echo $language['email1']?></th>
-               <td><?php echo $_SESSION['mail1']; ?></td>
-           </tr>
-           <tr>
-               <th class="" style="width: 200px"><?php echo $language['email2']?></th>
-               <td><?php echo $_SESSION['mail2']; ?></td>
-           </tr>
-           </tbody>
-       </table>
+    <div id="data">
 
 
-   </div>
+
+
+    </div>
 
 </div>
 

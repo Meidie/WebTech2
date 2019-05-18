@@ -5,7 +5,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../lang/s
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../lang/eng.php');
 }else{$language = include('../lang/svk.php');}
 
-if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']);}
+if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$language['websiteLang']); exit();}
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +66,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                 ?>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php?lang=<?php echo $language['websiteLang'];?>"><?php echo $language['logout']?></a>
+                <a class="nav-link" id="logout" href="../../Login/php/logout.php?lang=<?php echo $language['websiteLang'];?>"><?php echo $language['logout']?></a>
             </li>
         </ul>
     </nav>
@@ -78,7 +78,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
         <h2><?php echo $language['h2result']?></h2>
         <div class="or-seperator"></div>
     </div>
-    <div id="data">
+    <div id="data"  >
         <?php
             // Create connection
             require('config.php');
@@ -91,6 +91,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
               die("Connection failed: " . $conn->connect_error);
             }
             $id = $_SESSION['id'];
+            //vyhladam pre daneho studenta vsetky predmety v ktorych ma zdane nejake udaje
             $sql = "SELECT Predmet from Predmety WHERE id_student = $id ";
             $result = $conn->query($sql);
 
@@ -99,23 +100,41 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
                 echo "<h3 style='margin-bottom: 20px'>".$row['Predmet']."</h3>";
 
-
                 $subject = $row['Predmet'];
 
-                $sql = "SHOW columns FROM $subject";
-                $result2 = mysqli_query($conn,$sql);
+                //ziskam nazvy stlpcov v danom predmete
+                $sql = "SHOW columns FROM `$subject`";
 
-                echo "<table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
+                $result2 = $conn->query($sql);
+
+                //$result2 = mysqli_query($conn,$sql);
+
+
+                if ($result->num_rows > 0) {
+
+                    echo "<div style=\"overflow-x: auto \">
+                            <table class=\"table table-striped table-bordered text-center\" style='width: 800px'>
                             <thead >
                                 <tr class=\"color-black text-white\">";
 
-                while($row2 = mysqli_fetch_array($result2)){
-                    if($row2['Field'] != 'Meno' && $row2['Field'] != 'id' && $row2['Field'] != 'Rok')
-                    echo "<th scope=col>".$row2['Field']."</th>";
+                    //vytvorim hlavicku tabulky
+                    while($row2 = $result2->fetch_assoc()) {
+
+                        //ak sa stlpec nevola meno alebo rok vypisuje data
+                        if(strtolower($row2['Field']) != 'meno' && strtolower($row2['Field']) != 'id' && strtolower($row2['Field']) != 'rok'){
+
+                            if(strtolower($row2['Field']) == 'spolu')
+                                echo "<th scope=col>" . $language['sum'] . "</th>";
+                            else if(strtolower($row2['Field']) == 'znamka')
+                                echo "<th scope=col>" . $language['grade'] . "</th>";
+                            else
+                                echo "<th scope=col>".$row2['Field']."</th>";
+                        }
+                    }
                 }
 
-
-                $sql = "SELECT * from $subject  WHERE id = $id ";
+                //ziskam vsetky udaje k danym stlpcom
+                $sql = "SELECT * from `$subject`  WHERE id = $id ";
                 $result3 = $conn->query($sql);
 
                 if ($result3->num_rows > 0) {
@@ -126,16 +145,21 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
                             <tbody>
                                 <tr>";
 
+                    //vypisem udaje do tabulky
+                    $row3 = $result3->fetch_assoc();
 
-                    while($row3 = $result3->fetch_assoc()) {
+                    $loop = 1;
+                    foreach ($row3 as $r){
 
-                        echo "<th>".$row3['Cvicenie']."</th>";
-                        echo "<th>".$row3['Znamka']."</th>";
+                        if($loop > 3)
+                            echo "<th>".$r."</th>";
+
+                        $loop++;
                     }
 
                     echo "</tr>
                             </tbody>
-                          </table>";
+                          </table></div>";
                 }
             }
         }
