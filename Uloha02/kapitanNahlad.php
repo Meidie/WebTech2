@@ -46,6 +46,18 @@ if (isset($_POST['body']) && isset($_POST['clenId'])) {
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="../index.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
+        <ul class="navbar-nav mr-auto">
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto active">
+                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+            </li>
+        </ul>
+        
         <ul class="navbar-nav ml-auto">
 
             <li class="navbar-item">
@@ -57,20 +69,6 @@ if (isset($_POST['body']) && isset($_POST['clenId'])) {
                                                                                                     alt="uk"></a></div>
             </li>
 
-            <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
-            </li>
-            <li class="navbar-nav mr-auto  active">
-                <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
-            </li>
-            <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
-            </li>
-
-
-            <li class="navbar-item">
-                <a class="nav-link" id="team" href="vyberTimu.php"><?php echo $language['VyberTimu'] ?></a>
-            </li>
             <li class="navbar-item">
                 <a class="nav-link" id="team" href="student.php"><?php echo $language['PrehladBodov'] ?></a>
             </li>

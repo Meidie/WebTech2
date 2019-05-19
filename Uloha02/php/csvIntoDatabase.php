@@ -37,7 +37,7 @@ function preventUploadingNotCSVfile($fileName){
 
  // PREDMET SA MUSI PRIDAT ESTE PRED CYKLOM INAK BY SA ZAPISAL DO TABULKY VZDY PRI PRIDANI NOVEHO STUDENTA
 // sled pridavania Studneti, predmet, timy, clenovia timov
-/*
+
 $GLOBALS['conn']=$conn; // global conn pouzitelny vo funkciach
 
 preventDupliciteReccords(); // zbehne vzdy na zaciatku
@@ -84,6 +84,8 @@ while (($row = fgetcsv($file, 0, $_POST['separator'])) !== FALSE) {
 }
 
 fclose($file);
+
+header("Location: admin.php?lang=".$_POST['lang']);
 
 
 // prida do tabulky predmety predmet
