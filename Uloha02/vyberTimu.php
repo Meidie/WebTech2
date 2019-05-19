@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
     $language = include('lang/sk.php');
 } else if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
@@ -7,6 +7,8 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 } else {
     $language = include('lang/sk.php');
 }
+
+
 ?>
 <!doctype html>
 <html lang="<?php echo $language['websiteLang'] ?>">
@@ -31,12 +33,18 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 <?php
 include "congif.php";
 session_start();
+
+//kontrola prihlasenia
+if(!isset($_SESSION['loggedIn'])){header('Location: ../index.php?lang='.$language['websiteLang']);  exit();}
+
 //TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie!!!!!
 $_SESSION = array();
 ?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="kapitanNahlad.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
+
+
 
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
@@ -47,6 +55,17 @@ $_SESSION = array();
                                                                                                 height="30"
                                                                                                 alt="uk"></a></div>
             </li>
+
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+            </li>
+            <li class="navbar-nav mr-auto  active">
+                <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+            </li>
+
             <li class="navbar-item">
                 <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout'] ?></a>
             </li>
@@ -78,7 +97,7 @@ $_SESSION = array();
                         <option value="" selected disabled><?php echo $language['Select'] ?></option>
                         <?php
                         //TODO treba ešte doplniť IDziaka podľa prihláseného uživateľa
-                        $_SESSION['uziv'] = 86247;
+                       // $_SESSION['uziv'] = 86223;
                         $sql = "SELECT IDtimu FROM clenovaTimov WHERE IDziaka = " . $_SESSION['uziv'] . ";";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute();

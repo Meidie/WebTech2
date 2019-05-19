@@ -4,6 +4,9 @@
 //student: title: title = Tim, Pridelené body, Suhlasim s bodmi, meno, body, stav suhlasu, suhlasi/nesuhlasi
 return array(
     "websiteLang" => "en",
+    'profile' => 'Profile',
+    'results' => 'Results',
+    'point' => 'Points',
     "VyberTitle" => "Team selection",
     "Select" => "Choose an option",
     "Submit" => "Submit",

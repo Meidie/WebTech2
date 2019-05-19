@@ -71,8 +71,17 @@ es: "Elegir"
 
 /* ------ TeamOverview Page*/
 
+.teamNumberTD{
+    text-align: center;
+}
+
+.pointInput{
+    width: 20px;
+
+}
+
 .overview{
-    /*  display: none; */
+
 }
 
 .agreementIcon{

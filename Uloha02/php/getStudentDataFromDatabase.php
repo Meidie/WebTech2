@@ -1,7 +1,13 @@
 <?php
 include_once 'config.php';
 
-$sql = "SELECT ID,body, suhlas from clenovaTimov";
+$sql = "SELECT ID,body, suhlas from clenovaTimov
+        where EXISTS (
+    select ID
+    from timy
+    where IDpredmetu = (SELECT max(ID) from predmety)
+    and timy.ID=clenovaTimov.Idtimu
+    )";
 $result = $conn->query($sql);
 
 
@@ -26,7 +32,7 @@ if ($result->num_rows > 0) { // ak existuju zaznamy
     $arrays->pointArray= $pointArray;
     $arrays->agreementArray= $agreementArray;
 
-   // var_dump($data);
+   // var_dump($arrays);
 
     echo json_encode($arrays);
 

@@ -4,6 +4,9 @@
 //student: title: title = Tim, Pridelené body, Suhlasim s bodmi, meno, body, stav suhlasu, suhlasi/nesuhlasi
 return array(
     "websiteLang" => "sk",
+    'profile' => 'Profil',
+    'results' => 'Výsledky',
+    'point' => 'Body',
     "VyberTitle" => "Výber tímu",
     "Select" => "Vyberte možnosť",
     "Submit" => "Potvrdiť",

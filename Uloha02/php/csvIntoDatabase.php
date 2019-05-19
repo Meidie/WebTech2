@@ -8,19 +8,26 @@ zabezpecit proti droptable, etc
 */
 
 
-//preventUploadingNotCSVfile($_FILES['csvPath']['name']);
-function preventUploadingNotCSVfile($fileName){
-
-    $fileName=explode('.',$fileName);
-
-    if(strcmp($fileName[1],"csv"))
-    header("Location: admin.php");
-
-}
+echo $_POST['lang'];
 
 
     if(strcmp($_POST['permission'],"granted")) // ak sem neprisiel cez formular, je poslany na index.php
         header("Location: ../../index.php");
+
+preventUploadingNotCSVfile($_FILES['csvPath']['name']);
+function preventUploadingNotCSVfile($fileName){
+
+    $fileName=explode('.',$fileName);
+
+    if(strcmp($fileName[1],"csv")){
+
+        header("Location: admin.php?lang=".$_POST['lang']."&msg=notCSV");
+        exit();
+
+    }
+
+
+}
 
 /*
  $_POST['schoolYear']='2019';
@@ -30,7 +37,7 @@ function preventUploadingNotCSVfile($fileName){
 
  // PREDMET SA MUSI PRIDAT ESTE PRED CYKLOM INAK BY SA ZAPISAL DO TABULKY VZDY PRI PRIDANI NOVEHO STUDENTA
 // sled pridavania Studneti, predmet, timy, clenovia timov
-
+/*
 $GLOBALS['conn']=$conn; // global conn pouzitelny vo funkciach
 
 preventDupliciteReccords(); // zbehne vzdy na zaciatku

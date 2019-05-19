@@ -33,12 +33,17 @@ file chooser prelozit browse do sk
 
 include_once 'config.php';
 
+session_start();
+
 $GLOBALS['conn']=$conn;
 
 
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../langAdmin/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../langAdmin/eng.php');
 }else{$language = include('../langAdmin/svk.php');}
+
+//kontrola prihlasenia
+//if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
@@ -70,9 +75,19 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
+        <a class="navbar-brand" href="../../index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto active">
+                <a class="nav-link" href="admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+            </li>
+
             <li class="navbar-item">
                 <?php
                 if(strcmp($language['websiteLang'],"sk"))
@@ -92,11 +107,29 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 </header>
 
 
-<body onload="getStatisticFromDatabase();getStudentDataFromDatabase()">
+<body >
 
 
 
 <div class="container">
+
+    <?php
+
+    if(!strcmp($_GET['msg'],'notCSV')){
+
+        if(!strcmp($language['websiteLang'],"sk"))
+            $msg="Súbor musí byť CSV";
+        else
+            $msg="File must be the CSV";
+
+        echo "<div class=\"alert alert-danger\" role=\"alert\">".$msg."</div>";
+
+
+    }
+
+
+    ?>
+
 
     <form action="csvIntoDatabase.php" method="post" id="csvImport" enctype="multipart/form-data" class="float-left col-md-6 col-sm-12 col-xs-12">
 
@@ -165,11 +198,13 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
         <div class="form-group form-inline">
 
-            <button   type="submit" id="submitButton" class="btn btn-primary ">Submit</button>
+            <button   type="submit" id="submitButton" class="btn btn-primary "><?php echo $language['submit']; ?></button>
 
         </div>
 
     <input type="hidden" name="permission" value="granted">
+
+    <input type="hidden" name="lang" value="<?php echo $language['websiteLang']; ?>">
 
     </form>
 
@@ -181,7 +216,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             <div class="form-inline">
                 <div>
                     <select class="form-control" required name="predmet">
-                        <option value="" selected disabled>Vyberte možnosť</option>
+                        <option value="" selected disabled><?php echo $language['chooseAnOption']; ?></option>
                         <?php
                         $sql = "SELECT nazov from predmety;";
                         $stmt = $conn->prepare($sql);
@@ -197,7 +232,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
                 </div>
                 <div >
                     <select class="form-control" required name="rok">
-                        <option value="" selected disabled>Vyberte možnosť</option>
+                        <option value="" selected disabled><?php echo $language['chooseAnOption']; ?></option>
                         <?php
                         $sql = "SELECT distinct (rok)from timy;";
                         $stmt = $conn->prepare($sql);
@@ -213,11 +248,14 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
                 </div>
             </div>
             <div class="text-center">
-                <input type="submit" class="btn btn-warning">
+                <button   type="submit" id="submitButton" class="btn btn-primary "><?php echo $language['submit']; ?></button>
+
             </div>
         </form>
 
-    <div id="graphs">
+
+
+    <div id="graphs" >
 
         <canvas class="col-lg-6 col-sm-12 col-xs-12" id="studentsChart"></canvas>
 
@@ -279,6 +317,7 @@ where IDpredmetu=12
                     ','+myObj.allTeams+','+myObj.closedTeams+','+myObj.undexpresseBydAdmin+','+myObj.unexpressedByStudents;
                    */
 
+
                     let studentAxioms;
                     let teamAxioms;
 
@@ -292,10 +331,10 @@ where IDpredmetu=12
                     }
 
 
-                    crateChart("studentsChart",studentAxioms,
+                    crateChart("studentsChart",studentAxioms, myObj.allStudents,
                         myObj.agreedStudents,myObj.disagreedStudents,myObj.unexpressedStudents);
 
-                    crateChart("teamsChart",teamAxioms,
+                    crateChart("teamsChart",teamAxioms, myObj.allTeams,
                         myObj.closedTeams,myObj.undexpresseBydAdmin,myObj.unexpressedByStudents);
 
 
@@ -306,11 +345,11 @@ where IDpredmetu=12
         }
 
 
-        function crateChart(chartCanvas,axioms,data1,data2,data3) {
+        function crateChart(chartCanvas,axioms,data0,data1,data2,data3) {
             new Chart(document.getElementById(chartCanvas), {
                 type: 'pie',
                 data: {
-                    labels: [axioms[1],axioms[2],axioms[3]],
+                    labels: [axioms[1]+count(data1),axioms[2]+count(data2),axioms[3]+count(data3)],
                     datasets: [{
                         label: "Population (millions)",
                         backgroundColor: ["#7DF780", "#B51B12","#F0B705"],
@@ -320,10 +359,15 @@ where IDpredmetu=12
                 options: {
                     title: {
                         display: true,
-                        text: axioms[0]
+                        text: axioms[0]+count(data0)
                     }
                 }
             });
+        }
+
+        function count(number){
+
+            return " ("+number+")";
         }
         /*
                     new Chart(document.getElementById("pie-chart"), {
@@ -358,8 +402,8 @@ where IDpredmetu=12
 
     <table class="table">
         <thead>
-        <tr>
-            <th scope="col"><?php echo $language['teamNumber']; ?></th>
+        <tr class='teamNumberTD'>
+            <th  scope="col"><?php echo $language['teamNumber']; ?></th>
             <th scope="col"><?php echo $language['points']; ?></th>
             <th scope="col"><?php echo $language['state']; ?></th>
 
@@ -382,9 +426,9 @@ where IDpredmetu=12
 
             echo "<tr class=\"header\">";
 
-            echo "<td>".$row['cisloTimu']."</td><td>".manageTeamPoints($row['body'],$row['ID'])."</td>
+            echo "<td class='teamNumberTD' >".$row['cisloTimu']."</td><td>".manageTeamPoints($row['body'],$row['ID'])."</td>
             
-                  <td>".$stateToPrint."</td>";
+                  <td class='teamNumberTD'>".$stateToPrint."</td>";
 
             echo "</tr>";
 
@@ -402,8 +446,6 @@ where IDpredmetu=12
 
         </tbody>
     </table>
-
-
 
     <?php
 
@@ -483,9 +525,9 @@ where IDpredmetu=12
         echo "<td colspan=\"3\">";
 
         echo "<table class=\"table\">";
-        echo "<thead><tr>";
+        echo "<thead><tr >";
 
-        echo "<td>Email </td><td>".$GLOBALS['language']['name']."</td><td>".$GLOBALS['language']['points']."</td><td>".$GLOBALS['language']['agreement']."</td>";
+        echo "<td >Email </td><td>".$GLOBALS['language']['name']."</td><td>".$GLOBALS['language']['points']."</td><td>".$GLOBALS['language']['agreement']."</td>";
 
         echo "</tr></thead>";
 
@@ -496,7 +538,7 @@ where IDpredmetu=12
         echo "<tr>";
 
      //   echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td >".printPoints($row['body'])."</td>";
-        echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td id='pointsOfstudent".$row['id']."'>'pointsOfstudent".$row['id']."'</td>";
+        echo "<td>".$row['email']."</td><td>".$row['meno']."</td><td id='pointsOfstudent".$row['id']."'></td>";
 
         echo "<td id='agreementIconOfstudent".$row['id']."'></td>";
 /*
@@ -536,14 +578,14 @@ v tabulke staci ked bude id. nic viac netreba ----------------------------------
 
      */
 
+
         return
 
             "<form class=\"form-inline\">".
 
             "<button  type=\"button\" class=\"btn btn-light\" onclick='changeTeamPointsInDatabase($teamID,".$GLOBALS['generatedID'].")'>".$GLOBALS['language']['confirm']."</button>".
 
-            "<input id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" value=\"".$teamPoints."\">".
-
+            "<input style=\"width: 70px\" id='pointsInput".$GLOBALS['generatedID']."' type=\"number\" class=\"form-control pointInput\" value=\"".$teamPoints."\">".
 
             "</form>";
             // Body su v placeholderi. Nie predvyplnene
@@ -624,14 +666,15 @@ where ID='".$teamID."'";
     </div>
 
     <script>
-        /*
+
         $(document).ready(function(){
+            getStatisticFromDatabase(); // pri inicializácii
+            getStudentDataFromDatabase();
             setInterval(function(){
-                getStatisticFromDatabase();
-                getStudentDataFromDatabase()
-                //$("#graphs").load('admin.php')
-            }, 2000);
-        });*/
+                getStatisticFromDatabase(); // dalej v cykle
+                getStudentDataFromDatabase();
+            }, 10000);
+        });
     </script>
 
     <script>
@@ -701,7 +744,14 @@ where ID='".$teamID."'";
             agreementPicture.alt="agreement icon";
             agreementPicture.classList.add("agreementIcon");
 
-            document.getElementById("agreementIconOfstudent"+id).appendChild(agreementPicture);
+            let parentElement=document.getElementById("agreementIconOfstudent"+id);
+
+           // document.getElementById("agreementIconOfstudent"+id).parentNode.removeChild(element);
+
+           if(parentElement.hasChildNodes())
+            parentElement.removeChild(parentElement.lastChild);
+
+            parentElement.appendChild(agreementPicture);
 
 
         }

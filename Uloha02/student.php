@@ -88,6 +88,16 @@ if ($result->num_rows > 0) {
         <a class="navbar-brand" href="../index.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
         <ul class="navbar-nav ml-auto">
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+            </li>
+            <li class="navbar-nav mr-auto  active">
+                <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+            </li>
+
             <li class="navbar-item">
                 <div id="skDiv"><a class="nav-link" id="svk" href="student.php?lang=sk"> <img src="img/sk.png"
                                                                                               height="30"

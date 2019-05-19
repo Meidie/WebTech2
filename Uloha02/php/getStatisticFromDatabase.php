@@ -3,9 +3,29 @@ include_once 'config.php';
 
 
 $sql = "select count(IDziaka) as vsetci,
-(SELECT COUNT(*) from clenovaTimov where suhlas=true) as suhlasiaci,
-(SELECT count(*) from clenovaTimov where suhlas=false) as nesuhlasiaci,
-(SELECT count(*) from clenovaTimov where suhlas is null ) as nevyjadreni
+(SELECT COUNT(*) from clenovaTimov where suhlas=true and EXISTS (
+    select ID
+    from timy
+    where IDpredmetu = (SELECT max(ID) from predmety)
+    and timy.ID=clenovaTimov.Idtimu
+    )) as suhlasiaci,
+
+(SELECT count(*) from clenovaTimov where suhlas=false and EXISTS (
+    select ID
+    from timy
+    where IDpredmetu = (SELECT max(ID) from predmety)
+    and timy.ID=clenovaTimov.Idtimu
+    )) as nesuhlasiaci,
+    
+    
+(SELECT count(*) from clenovaTimov where suhlas is null and EXISTS (
+    select ID
+    from timy
+    where IDpredmetu = (SELECT max(ID) from predmety)
+    and timy.ID=clenovaTimov.Idtimu
+    ) ) as nevyjadreni
+
+
 from clenovaTimov
 where EXISTS (
     select ID
@@ -29,9 +49,11 @@ if ($result->num_rows > 0){
     $statistic->unexpressedStudents=$row['nevyjadreni'];
 
     $sql = "select count(ID) as vsetci,
-(SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom=true) as uzavrete,
-(SELECT COUNT(*) from timy where schvaleneKapitanom is not null and schvaleneAdminom is null) as nevyjadreneAdminom,
-(SELECT COUNT(*) from timy where schvaleneKapitanom is null and schvaleneAdminom is null) as nevyjadreneStudentmi
+(SELECT COUNT(*) from timy where schvaleneKapitanom=true and schvaleneAdminom=true and IDpredmetu = (SELECT max(ID) from predmety)) as uzavrete,
+
+(SELECT COUNT(*) from timy where schvaleneKapitanom is not null and schvaleneAdminom is null and IDpredmetu = (SELECT max(ID) from predmety)) as nevyjadreneAdminom,
+
+(SELECT COUNT(*) from timy where schvaleneKapitanom is null and schvaleneAdminom is null and IDpredmetu = (SELECT max(ID) from predmety)) as nevyjadreneStudentmi
 from timy
 where IDpredmetu = (SELECT max(ID) from predmety)"; // vypise statistiky posledneho pridatenho predmetu
 
