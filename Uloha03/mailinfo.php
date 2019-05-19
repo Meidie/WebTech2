@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-//if(!isset($_SESSION['admin'])){header('Location: ../index.php?lang='.$language['websiteLang']); exit();}
+if(!isset($_SESSION['admin'])){header('Location: ../index.php?lang='.$language['websiteLang']); exit();}
 
 if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.php');
 }else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('lang/eng.php');
