@@ -143,7 +143,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
         </table>
 
 
-            <a href="../file/Dokumentacia.docx"><?php echo $language['documentation'];?></a>
+            <a href="../file/Dokumentacia.doc"><?php echo $language['documentation'];?></a>
     </div>
 
 </div>

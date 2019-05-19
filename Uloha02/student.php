@@ -112,7 +112,7 @@ if ($result->num_rows > 0) {
             </li>
             <?php
             if ($_SESSION['kapitan'] == 1) {
-                print ('<li class="navbar-item"><a class="nav-link" id="kapitan" href="kapitanNahlad.php">' . $language['Kapitan'] . '</a></li>');
+                print ('<li class="navbar-item"><a class="nav-link" id="kapitan" href="kapitanNahlad.php?lang='.$language['websiteLang'].'">' . $language['Kapitan'] .'</a></li>');
             }
             if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 
@@ -130,7 +130,7 @@ if ($result->num_rows > 0) {
             ?>
             <!--TODO pri logout vymazat vsetky info zo session!!!!-->
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout'] ?></a>
+                <a class="nav-link" id="logout" href="../Login/php/logout.php?lang=<?php echo $language['websiteLang'] ?>"><?php echo $language['Logout'] ?></a>
             </li>
         </ul>
     </nav>

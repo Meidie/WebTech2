@@ -5,15 +5,13 @@
 
 .form-control{margin: 10px}
 
-
-#resultCSV{
-    width: 120px;
-}
-
 #submit{
     text-align: center;
 }
 
+#mainTable{
+    border-bottom: solid black 4px;
+}
 
 #submitButton{
     width: 100px;
@@ -33,10 +31,10 @@
 #formulare{
     background-color: aquamarine;
 }
-
+/*
 #separatorDiv{
     margin-left: 20px;
-}
+}*/
 /*
 $custom-file-text: (
 en: "Browse",
@@ -100,7 +98,7 @@ es: "Elegir"
 
 /* ----------------------- */
 body {
-       background: #D8D8D8;
+       background: #FAFAFA;
 }
 
 header{

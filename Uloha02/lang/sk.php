@@ -17,7 +17,7 @@ return array(
     "Meno"=>"Meno",
     "Body"=>"Body",
     "VyberTimu"=>"Výber tímu",
-    "Kapitan" => "Prehlad Kapitána",
+    "Kapitan" => "Prehľad Kapitána",
     "PrehladBodov"=>"Prehľad bodov",
     "SuhlasBody" =>"Súhlasím s bodmi",
     "StavSuhlasu"=>"Stav súhlasu",

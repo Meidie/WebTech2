@@ -51,7 +51,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
         $("#get_sablona").click(function(){
 
         var d = document.getElementById("sablona").value;
-        var url = 'https://147.175.121.210.nip.io:4105/WebTech2/Uloha03/sablonky.php';
+        var url = 'https://147.175.121.210:4161/zadania/final/WebTech2/Uloha03/sablonky.php';
         url = url + '/getsablona/' + d;
         //alert(url);
 
@@ -79,7 +79,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
                 <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="../Uloha01/php/admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
             <li class="navbar-nav mr-auto">
                 <a class="nav-link" href="../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
@@ -231,7 +231,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
     <br />
 
     <?php
-    require 'phpmailer/phpmailer/PHPMailerAutoload.php';
+    require 'phpmailer/PHPMailerAutoload.php';
     function generateRandomString($length = 10)
     {
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
@@ -276,16 +276,16 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
                     }
                     $o++;
                     while ($i < count($data)) {
-                        if(strpos( $data[$i] ," ") != FALSE){
-                            array_push($pole_mena, $data[$i]);
+                        if(strpos( utf8_encode($data[$i]) ," ") != FALSE){
+                            array_push($pole_mena, utf8_encode($data[$i]));
 
                         }
-                        if(strpos( $data[$i] ,"@") != FALSE){
-                            array_push($pole_email, $data[$i]);
+                        if(strpos( utf8_encode($data[$i]) ,"@") != FALSE){
+                            array_push($pole_email, utf8_encode($data[$i]));
 
                         }
-                        $obsah_spravy[$o][$i]= $data[$i];
-                        echo "<td>" . $data[$i] . "</td>";$i++;
+                        $obsah_spravy[$o][$i]= utf8_encode($data[$i]);
+                        echo "<td>" . utf8_encode($data[$i]) . "</td>";$i++;
 
                     }
                     if($jedenkrat == 0){

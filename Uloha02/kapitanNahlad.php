@@ -70,10 +70,10 @@ if (isset($_POST['body']) && isset($_POST['clenId'])) {
             </li>
 
             <li class="navbar-item">
-                <a class="nav-link" id="team" href="student.php"><?php echo $language['PrehladBodov'] ?></a>
+                <a class="nav-link" id="team" href="student.php?lang=<?php echo $language['websiteLang'] ?>"><?php echo $language['PrehladBodov'] ?></a>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout'] ?></a>
+                <a class="nav-link" id="logout" href="../Login/php/logout.php?lang=<?php echo $language['websiteLang'] ?>"><?php echo $language['Logout'] ?></a>
             </li>
             <?php
             if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {

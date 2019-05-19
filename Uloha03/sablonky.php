@@ -13,7 +13,7 @@ $username = "xmacakn";
 $password = "Heslo12345";
 
 $db="webtech2";
-$conn = new mysqli($servername, $username, $password, $db, 8105);
+$conn = new mysqli($servername, $username, $password, $db);
 mysqli_set_charset($conn, "utf8");
 // Check connection
 if ($conn->connect_error) {
@@ -22,7 +22,7 @@ if ($conn->connect_error) {
 else{
     // echo"Pripojeny";
 }
-$id_sablony = $pieces[7];
+$id_sablony = $pieces[9];
 
 switch ($method) {
     case 'GET':

@@ -65,7 +65,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
     <!--jQuery Animation-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-
+    <!--Admin page css -->
     <link rel="stylesheet" type="text/css" href="../css/Adminstyle.css">
     <!--Graph.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -140,8 +140,6 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
 
     ?>
-
-
     <form action="csvIntoDatabase.php" method="post" id="csvImport" enctype="multipart/form-data" class="float-left col-md-6 col-sm-12 col-xs-12">
 
         <h2 class="text-center"><?php echo $language['formImportHeader']; ?></h2>
@@ -175,7 +173,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
         <div class="form-inline">
 
-        <div class="form-group col-xs-4" >
+        <div class="form-group col-xs-8" >
 
             <label  for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
@@ -195,19 +193,17 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             </script>
 
 
-            <div class="form-group form-inline col-xs-4" id="separatorDiv">
 
-            <label for="separator"><?php echo $language['separator']; ?></label>
-            <select name="separator" class="form-control" id="separator" required>
-                <option value=";">;</option>
-                <option value=",">,</option>
-            </select>
-
-            </div>
 
         </div>
 
-        <div class="form-group form-inline" id="submit">
+        <div class="form-group form-inline col-xs-8" id="submit">
+
+                <label for="separator"><?php echo $language['separator']; ?></label>
+                <select name="separator" class="form-control" id="separator" required>
+                    <option value=";">;</option>
+                    <option value=",">,</option>
+                </select>
 
             <button   type="submit" id="submitButton" class="btn btn-primary "><?php echo $language['submit']; ?></button>
 
@@ -411,7 +407,7 @@ where IDpredmetu=12
     <h2 class="text-center"><?php echo $language['teamOverview']; ?></h2>
 
 
-    <table class="table">
+    <table class="table" >
         <thead>
         <tr class='teamNumberTD'>
             <th  scope="col"><?php echo $language['teamNumber']; ?></th>
@@ -511,7 +507,7 @@ where IDpredmetu=12
 
         $stateOfButtons=shouldBeDisabled($teamID); // vrati null ak tlacidla maju byt aktivne
                                                     // vrati disabled ak sa tim este nedohodol
-
+        
         echo "<tr class=\"overview\">";
         echo "<td>".$GLOBALS['language']['approval']."</td>";
         echo "<td  colspan=\"2\">";          // posiela request na zmenu stplca schvaleneAdminom v dbs. Success button posle 1. danger button 0
