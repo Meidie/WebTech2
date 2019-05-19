@@ -1,0 +1,13 @@
+ <ul class="navbar-nav mr-auto"> 	  
+ 	<li class="navbar-nav mr-auto">
+            <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+        </li>
+        <li class="navbar-nav mr-auto">
+            <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+       </li>
+       <li class="navbar-nav mr-auto active">
+           <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+       </li>
+</ul>
+
+	
