@@ -7,6 +7,7 @@
 
     if(isset($_SESSION['loggedIn'])){
 
+        unset($_SESSION['uziv']);
         unset($_SESSION['loggedIn']);
         unset($_SESSION['id']);
         unset($_SESSION['name']);
@@ -24,6 +25,5 @@
         header('Location: ../../index.php');
         exit();
     }
-
 
 ?>

@@ -8,6 +8,7 @@
         'name' => 'Username',
         'password' => 'Password',
         'loginButton' => 'Sign in',
-        'failedLogin' => 'Incorrect login information!'
+        'failedLogin' => 'Incorrect login information!',
+
     )
 ?>
