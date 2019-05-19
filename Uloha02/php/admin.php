@@ -1,8 +1,6 @@
 <?php
 /*TODO
 
-jquery auto load každých 10 sec
-
 Export csv translate
 
 odstranit funkciu z setTeamPointsIndatabse v JS
@@ -24,8 +22,6 @@ zarovanie contentu formularov
 
 Num input v tabulke osestrit pri resize
 
-buttons pre schvalenie
-
 sfarbenie riadkov tabulky podla procesu+ohranicenie
 
 }
@@ -40,9 +36,9 @@ include_once 'config.php';
 $GLOBALS['conn']=$conn;
 
 
-if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../Adminlang/svk.php');
-}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../Adminlang/eng.php');
-}else{$language = include('../Adminlang/svk.php');}
+if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../langAdmin/svk.php');
+}else if(isset($_GET['lang']) && $_GET['lang'] == 'en'){$language = include('../langAdmin/eng.php');
+}else{$language = include('../langAdmin/svk.php');}
 
 $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
@@ -140,11 +136,19 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             <label  for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
-                <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="es">
-                <label class="custom-file-label" for="resultCSV"><?php echo $language['CSVfilePlaceholder']; ?></label>
+                <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="en">
+                <label class="custom-file-label form-control-file" aria-describedby="fileHelp" for="resultCSV"><?php echo $language['CSVfilePlaceholder']; ?></label>
             </div>
 
         </div>
+
+            <script>
+                $('.custom-file-input').on('change',function(){ // po vybrati suboru vlozi path do labelu
+                    var fileName = $(this).val();
+                    $(this).next('.form-control-file').addClass("selected").html(fileName);
+                })
+
+            </script>
 
 
             <div class="form-group form-inline col-xs-4" id="separatorDiv">
@@ -364,8 +368,8 @@ where IDpredmetu=12
 
         <tbody>
 
-        <?php
-        $sql = "SELECT * FROM timy order by cisloTimu";
+        <?php // beriem timy z posledneho pridaneho predmetu
+        $sql = "SELECT * FROM timy where IDpredmetu = (SELECT max(ID) from predmety) order by cisloTimu";
         $result = $conn->query($sql);
 
         $GLOBALS['generatedID']=0; // toto ID je pridelovane inputom vo vyslednej tabulke

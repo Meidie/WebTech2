@@ -4,11 +4,15 @@
 .form-group{margin: 10px}
 
 .form-control{margin: 10px}
-/*
+
+
 #resultCSV{
-    width: 200px;
+    width: 120px;
 }
-*/
+
+
+
+
 #submitButton{
     width: 100px;
 }

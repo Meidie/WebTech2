@@ -8,7 +8,7 @@ zabezpecit proti droptable, etc
 */
 
 
-preventUploadingNotCSVfile($_FILES['csvPath']['name']);
+//preventUploadingNotCSVfile($_FILES['csvPath']['name']);
 function preventUploadingNotCSVfile($fileName){
 
     $fileName=explode('.',$fileName);
@@ -30,7 +30,7 @@ function preventUploadingNotCSVfile($fileName){
 
  // PREDMET SA MUSI PRIDAT ESTE PRED CYKLOM INAK BY SA ZAPISAL DO TABULKY VZDY PRI PRIDANI NOVEHO STUDENTA
 // sled pridavania Studneti, predmet, timy, clenovia timov
-/*
+
 $GLOBALS['conn']=$conn; // global conn pouzitelny vo funkciach
 
 preventDupliciteReccords(); // zbehne vzdy na zaciatku
