@@ -31,8 +31,6 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 <?php
 include "congif.php";
 session_start();
-//TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie!!!!!
-$_SESSION = array();
 ?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
