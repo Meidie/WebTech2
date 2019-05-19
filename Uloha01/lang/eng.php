@@ -42,6 +42,15 @@ return array(
     'delete' => 'Delete subject',
     'pdf' => 'Download as PDF',
     'sum' => 'Sum',
-    'grade' => 'Grade'
+    'grade' => 'Grade',
+    'documentation' => 'Documentation',
+    'tasks' => 'Task distribution',
+    'login' => 'Login',
+    'task1' => 'Task 01',
+    'task2' => 'Task 02',
+    'task3' => 'Task 03',
+    'team' => 'Team selection',
+    'point' => 'Points',
+
 )
 ?>

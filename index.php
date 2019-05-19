@@ -9,7 +9,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('Login/lan
 
 //kontrola prihlasenia
 if(isset($_SESSION['loggedIn'])){header('Location: Uloha01/php/user_main.php?lang='.$language['websiteLang']); exit();}
-else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.php?lang='.$language['websiteLang']); exit();}
+else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_main.php?lang='.$language['websiteLang']); exit();}
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ else if(isset($_SESSION['admin'])){header('Location: Uloha01/php/admin_results.p
 
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="Login/img/logo.png"> </a>
+        <a class="navbar-brand" href="index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="Login/img/logo.png"> </a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <h1 class="text-white"><?php echo $language['h1']?></h1>

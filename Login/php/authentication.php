@@ -9,7 +9,7 @@
 
             // vytvorenie spojena
             require('config.php');
-            $conn = new mysqli($hostname, $username, $password, $dbname,4171);
+            $conn = new mysqli($hostname, $username, $password, $dbname);
             $conn->set_charset("utf8");
 
             //kontrola spojena
@@ -81,6 +81,7 @@
                     $entry = ldap_first_entry($ldapconn, $sr);
 
                     $_SESSION['id'] = ldap_get_values($ldapconn, $entry, "uisid")[0];
+                    $_SESSION['uziv'] = ldap_get_values($ldapconn, $entry, "uisid")[0];
                     $_SESSION['name'] = ldap_get_values($ldapconn, $entry, "givenname")[0];
                     $_SESSION['lastName'] = ldap_get_values($ldapconn, $entry, "sn")[0];
                     $_SESSION['mail1'] = ldap_get_values($ldapconn, $entry, "mail")[3];
@@ -97,7 +98,7 @@
                     $idCode = ldap_get_values($ldapconn,$entry,"uisid")[0];
 
                      require('config.php');
-                     $conn = new mysqli($hostname, $username, $password, $dbname2,4171);
+                     $conn = new mysqli($hostname, $username, $password, $dbname2);
                      $conn->set_charset("utf8");
 
                      $sql  = "SELECT * FROM `studenti` WHERE `ID` ='$idCode'";
@@ -110,6 +111,7 @@
 
                                 $_SESSION['loggedIn'] = "access";
                                 $_SESSION['id'] = ldap_get_values($ldapconn, $entry, "uisid")[0];
+                                $_SESSION['uziv'] = ldap_get_values($ldapconn, $entry, "uisid")[0];
                                 $_SESSION['name'] = ldap_get_values($ldapconn, $entry, "givenname")[0];
                                 $_SESSION['lastName'] = ldap_get_values($ldapconn, $entry, "sn")[0];
                                 $_SESSION['mail1'] = ldap_get_values($ldapconn, $entry, "mail")[3];

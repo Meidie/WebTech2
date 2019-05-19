@@ -8,7 +8,8 @@ return array(
     'name' => 'Meno',
     'password' => 'Heslo',
     'loginButton' => 'Prihlásiť',
-    'failedLogin' => 'Prihlasovacie údaje nie sú správne!'
+    'failedLogin' => 'Prihlasovacie údaje nie sú správne!',
+    'team' => 'Výber tímu',
 )
 
 ?>

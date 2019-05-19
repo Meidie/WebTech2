@@ -42,7 +42,15 @@ return array(
     'delete' => 'Odstrániť predmet',
     'pdf' => 'Stiahnuť ako PDF',
     'sum' => 'Spolu',
-    'grade' => 'Známka'
+    'grade' => 'Známka',
+    'documentation' => 'Dokumentácia',
+    'tasks' => 'Rozdelenie úloh',
+    'login' => 'Prihlásenie',
+    'task1' => 'Úloha 01',
+    'task2' => 'Úloha 02',
+    'task3' => 'Úloha 03',
+    'team' => 'Výber tímu',
+    'point' => 'Body',
 )
 
 ?>

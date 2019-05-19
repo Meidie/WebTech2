@@ -35,7 +35,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
 
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
+        <a class="navbar-brand" href="../../index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <!--<h1 class="text-white"></h1>-->
@@ -45,6 +45,9 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
             </li>
             <li class="navbar-nav mr-auto active">
                 <a class="nav-link" href="user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha02/vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['team']?></a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -86,7 +89,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../../index.php?lang='.$lang
         <?php
             //vytvorit spojenie
             require('config.php');
-            $conn = new mysqli($hostname, $username, $password, $dbname,4171);
+            $conn = new mysqli($hostname, $username, $password, $dbname);
             $conn->set_charset("utf8");
 
             //kontrola spojenia

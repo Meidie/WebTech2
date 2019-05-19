@@ -27,6 +27,8 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
     <link rel="stylesheet" type="text/css" href="../css/style.css">
 
@@ -36,7 +38,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
 
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
-        <a class="navbar-brand" href="https://147.175.121.210:4171/files/SkuskoveZadanie/WebTech2/index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
+        <a class="navbar-brand" href="../../index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <!--<h1 class="text-white"></h1>-->
@@ -46,6 +48,9 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
             </li>
             <li class="navbar-nav mr-auto">
                 <a class="nav-link" href="admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -80,11 +85,58 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
 <div class="container">
 
     <div id="caption">
-        <h2>ADMIN</h2>
+        <h2><?php echo $language['tasks'];?></h2>
         <div class="or-seperator"></div>
     </div>
     <div id="data">
+        <table class="table table-striped table-bordered text-center"  data-show-print="true" >
+            <thead><tr class="color-black text-white">
+                <th scope=col ></th>
+                <th scope=col>Nicolas Macák</th>
+                <th scope=col>Samuel Orth</th>
+                <th scope=col>Ľuboš Kolumbert</th>
+                <th scope=col>Samuel Palaj</th>
+                <th scope=col>Matúš Pohančenik</th>
+            </tr></thead>
+            <tbody>
+                <tr>
+                    <th><?php echo $language['login'];?></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><i class="material-icons">done</i></th>
+                </tr>
+                <tr>
+                    <th><?php echo $language['task1'];?></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><i class="material-icons">done</i></th>
+                </tr>
+                <tr>
+                    <th><?php echo $language['task2'];?></th>
+                    <th><i class="material-icons">done</i></th>
+                    <th></th>
+                    <th></th>
+                    <th><i class="material-icons">done</i></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th><?php echo $language['task3'];?></th>
+                    <th></th>
+                    <th><i class="material-icons">done</i></th>
+                    <th><i class="material-icons">done</i></th>
+                    <th></th>
+                    <th></th>
+                </tr>
 
+            </tbody>
+        </table>
+
+
+            <a href="../file/Dokumentacia.docx"><?php echo $language['documentation'];?></a>
     </div>
 
 </div>

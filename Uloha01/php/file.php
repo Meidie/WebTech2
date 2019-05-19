@@ -10,7 +10,7 @@ if(isset($_POST['submitAdd'])){
 
     //spojenie s databazou
     require('config.php');
-    $conn = new mysqli($hostname, $username, $password, $dbname,4171);
+    $conn = new mysqli($hostname, $username, $password, $dbname);
     if ($conn->connect_error) {
         header('Location: admin_results.php?msg=connectionFailed&lang='.$language['websiteLang']);
         die("Connection failed: " . $conn->connect_error);
