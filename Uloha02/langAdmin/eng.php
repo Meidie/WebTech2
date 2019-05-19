@@ -34,7 +34,11 @@ return array(
     'deniedByAdmin'  => 'Denied by admin',
     'teamInAgreement'  => 'Team in agreement',
     'teamInDisagreement'  => 'Team in disagreement',
-    'teamIsVoting'  => 'Team is voting'
+    'teamIsVoting'  => 'Team is voting',
+    'mail'  => 'Mail',
+    'mailinfo'  => 'Mail Info',
+
+
 
 )
 ?>

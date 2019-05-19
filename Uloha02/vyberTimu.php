@@ -29,7 +29,7 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <title><?php echo $language['VyberTitle'] ?></title>
 </head>
-<body>
+<body style="background: #FAFAFA">
 <?php
 include "congif.php";
 session_start();
@@ -51,10 +51,10 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../index.php?lang='.$languag
                 <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="../Uloha01/php/user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['VyberTitle']?></a>
             </li>
         </ul>
 
@@ -74,7 +74,7 @@ if(!isset($_SESSION['loggedIn'])){header('Location: ../index.php?lang='.$languag
 
 
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo $language['Logout'] ?></a>
+                <a class="nav-link" id="logout" href="../Login/php/logout.php"><?php echo $language['Logout'] ?></a>
             </li>
             <?php
 

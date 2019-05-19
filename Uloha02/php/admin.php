@@ -43,7 +43,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('../langAd
 }else{$language = include('../langAdmin/svk.php');}
 
 //kontrola prihlasenia
-//if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
+if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$language['websiteLang']);  exit();}
 
 $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
@@ -70,23 +70,34 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
     <!--Graph.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
-    <title>ADMIN</title>
+    <title>Admin</title>
 </head>
 
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="../../index.php?lang=<?php echo $language['websiteLang']?>"> <img height="60"  alt="logo" src="../img/logo.png"> </a>
 
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav mr-auto">
             <li class="navbar-nav mr-auto">
                 <a class="nav-link" href="../../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="../../Uloha01/php/admin_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
             <li class="navbar-nav mr-auto active">
                 <a class="nav-link" href="admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
             </li>
+	    <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha03/indexlu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['mail']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha03/mailinfo.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['mailinfo']?></a>
+            </li>
+
+
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
 
             <li class="navbar-item">
                 <?php
@@ -99,7 +110,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
                 ?>
             </li>
             <li class="navbar-item">
-                <a class="nav-link" id="logout" href="logout.php"><?php echo  $language['logout']?></a>
+                <a class="nav-link" id="logout" href="../../Login/php/logout.php"><?php echo  $language['logout']?></a>
             </li>
         </ul>
     </nav>
@@ -140,7 +151,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
         <div class="form-group col-xs-4">
 
             <label for="schoolYear"> <?php echo $language['schoolYear']; ?> </label>
-            <select name="schoolYear" class="form-control" id="schoolYear">
+            <select name="schoolYear" class="form-control" id="schoolYear" required>
                 <?php
                 for($i=0;$i<=2;$i++){
                         $year=date("Y",strtotime("-".$i." year"));
@@ -156,7 +167,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
         <div class="form-group col-xs-4 ">
 
             <label for="subject"><?php echo $language['subjectName']; ?></label>
-            <input name="subject" type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>">
+            <input name="subject" type="text" class="form-control" id="subject" placeholder="<?php echo $language['subjectNamePlaceholder']; ?>" required>
 
         </div>
 
@@ -169,7 +180,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             <label  for="resultCSV"><?php echo $language['CSVfile']; ?></label>
 
             <div class="custom-file">
-                <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="en">
+                <input  name="csvPath" type="file" class="custom-file-input" id="resultCSV" lang="en" required>
                 <label class="custom-file-label form-control-file" aria-describedby="fileHelp" for="resultCSV"><?php echo $language['CSVfilePlaceholder']; ?></label>
             </div>
 
@@ -187,7 +198,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
             <div class="form-group form-inline col-xs-4" id="separatorDiv">
 
             <label for="separator"><?php echo $language['separator']; ?></label>
-            <select name="separator" class="form-control" id="separator">
+            <select name="separator" class="form-control" id="separator" required>
                 <option value=";">;</option>
                 <option value=",">,</option>
             </select>
@@ -196,7 +207,7 @@ $GLOBALS['language']=$language; // pre zmenu jazyku vo funkciach
 
         </div>
 
-        <div class="form-group form-inline">
+        <div class="form-group form-inline" id="submit">
 
             <button   type="submit" id="submitButton" class="btn btn-primary "><?php echo $language['submit']; ?></button>
 

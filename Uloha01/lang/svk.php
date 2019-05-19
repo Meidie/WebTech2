@@ -51,6 +51,9 @@ return array(
     'task3' => 'Úloha 03',
     'team' => 'Výber tímu',
     'point' => 'Body',
+    'mail'  => 'Mail',
+    'mailinfo'  => 'Mail Info',
+
 )
 
 ?>

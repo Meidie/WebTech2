@@ -10,7 +10,9 @@
     width: 120px;
 }
 
-
+#submit{
+    text-align: center;
+}
 
 
 #submitButton{
@@ -98,8 +100,7 @@ es: "Elegir"
 
 /* ----------------------- */
 body {
-    color: #fff;
-    background: #D8D8D8;
+       background: #D8D8D8;
 }
 
 header{
@@ -135,7 +136,7 @@ h1{
     margin: 10px 0 25px;
 }
 .login-form form {
-    color: #7a7a7a;
+   
     border-radius: 3px;
     margin-bottom: 15px;
     background: #fff;

@@ -148,7 +148,8 @@ if(isset($_POST['submitAdd'])){
                 if ($conn->query($sql2Call) === TRUE) {
 
                     $sql3 = "INSERT INTO `Predmety` (`id`, `id_student`, `Predmet`) VALUES (NULL, '".$id_student."', '".$name."')";
-                    if ($conn->query($sql3) === TRUE) {
+                  
+		   if ($conn->query($sql3) === TRUE) {
                         echo "INSERTED";
                     }else{//ak nastane chyba pri pridavani tabulku vymazem
                         $sql = "DELETE FROM `$name` WHERE `$id` = '$id_student'";

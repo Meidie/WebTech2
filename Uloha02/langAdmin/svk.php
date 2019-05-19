@@ -35,7 +35,10 @@ return array(
     'deniedByAdmin'  => 'Zamietnuté adminom',
     'teamInAgreement'  => 'Tím sa dohodol',
     'teamInDisagreement'  => 'Tím sa nedohodol',
-    'teamIsVoting'  => 'Tím hlasuje'
+    'teamIsVoting'  => 'Tím hlasuje',
+    'mail'  => 'Mail',
+    'mailinfo'  => 'Mail Info',
+
 
 
 )

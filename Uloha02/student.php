@@ -55,7 +55,7 @@ if (isset($_POST['suhlas'])) {
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <title>Tim</title>
 </head>
-<body>
+<body style="background: #FAFAFA">
 <?php
 $tim = $_SESSION['tim'];
 $sql = "SELECT nazov FROM predmety where ID = (SELECT IDpredmetu from timy where ID = " . $tim . ");";
@@ -89,13 +89,13 @@ if ($result->num_rows > 0) {
 
         <ul class="navbar-nav mr-auto">
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+                <a class="nav-link" href="../Uloha01/php/user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="../Uloha01/php/user_results.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['VyberTitle']?></a>
             </li>
         </ul>
 

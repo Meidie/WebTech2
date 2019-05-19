@@ -41,20 +41,20 @@ if (isset($_POST['body']) && isset($_POST['clenId'])) {
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <title>Tím</title>
 </head>
-<body>
+<body style="background:#FAFAFA">
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
         <a class="navbar-brand" href="../index.php"> <img height="60" alt="logo" src="img/logo.png"> </a>
 
         <ul class="navbar-nav mr-auto">
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
+                <a class="nav-link" href="../Uloha01/php/user_main.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['profile']?></a>
             </li>
             <li class="navbar-nav mr-auto">
-                <a class="nav-link" href="../Uloha01/php/admin_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
+                <a class="nav-link" href="../Uloha01/php/user_results?lang=<?php echo $language['websiteLang']?>"><?php echo $language['results']?></a>
             </li>
             <li class="navbar-nav mr-auto active">
-                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
+                <a class="nav-link" href="vyberTimu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['VyberTitle']?></a>
             </li>
         </ul>
         

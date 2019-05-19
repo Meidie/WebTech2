@@ -51,6 +51,9 @@ return array(
     'task3' => 'Task 03',
     'team' => 'Team selection',
     'point' => 'Points',
+    'mail'  => 'Mail',
+    'mailinfo'  => 'Mail Info',
+
 
 )
 ?>

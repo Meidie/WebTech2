@@ -52,6 +52,13 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
             <li class="navbar-nav mr-auto">
                 <a class="nav-link" href="../../Uloha02/php/admin.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['point']?></a>
             </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha03/indexlu.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['mail']?></a>
+            </li>
+            <li class="navbar-nav mr-auto">
+                <a class="nav-link" href="../../Uloha03/mailinfo.php?lang=<?php echo $language['websiteLang']?>"><?php echo $language['mailinfo']?></a>
+            </li>
+
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="navbar-item">
@@ -94,7 +101,7 @@ if(!isset($_SESSION['admin'])){header('Location: ../../index.php?lang='.$languag
                 <th scope=col ></th>
                 <th scope=col>Nicolas Macák</th>
                 <th scope=col>Samuel Orth</th>
-                <th scope=col>Ľuboš Kolumbert</th>
+                <th scope=col>Ľuboš Kolumber</th>
                 <th scope=col>Samuel Palaj</th>
                 <th scope=col>Matúš Pohančenik</th>
             </tr></thead>
