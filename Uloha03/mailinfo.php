@@ -36,7 +36,7 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
     </title>
 
 </head>
-<body style=" background: #D8D8D8;">
+<body style=" background: #FAFAFA;">
 <header>
  <!--   <h1 id="tit_mail">
         Mail Info

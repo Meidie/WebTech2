@@ -310,29 +310,30 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
     $jedenkrat = 0;
     ?>
     </table>
+    <div class="container-fluid">
     <h2><?php echo $language['send']?></h2>
 
     <label><?php echo $language['template']?>
-        <select id="sablona" name="combo_sablona" onchange="changesabl()">
-            <option value="1" selected="selected">1</option>
-            <option value="2">2</option>
+        <select id="sablona" name="combo_sablona" class="form-control" onchange="changesabl()">
+            <option value="1" class="form-control" selected="selected">1</option>
+            <option value="2" class="form-control">2</option>
         </select>
         <button id="get_sablona" class="btn btn-info"><?php echo $language['use_temp']?></button>
     </label>
 
-    <form action="" method="post" accept-charset="UTF-8">
-        <input type="text" name="sablid" id="sablid" style="display: none">
-        <?php echo $language['sender']?> <input type="text" name="email" placeholder="Email"><br>
-        <?php echo $language['pw_mail']?><input type="password" name="heslo"><br>
-        <?php echo $language['name']?><input type="text" name="meno" placeholder="<?php echo $language['name2']?>"><br>
+    <form action="" method="post" accept-charset="UTF-8" class="form-group">
+        <input type="text" name="sablid" id="sablid" class="form-control" style="display: none">
+        <?php echo $language['sender']?> <input type="email" name="email" placeholder="Email" class="col-5" required><br>
+        <?php echo $language['pw_mail']?><input type="password" name="heslo" class="col-5" placeholder="<?php echo $language['pw']?>" required><br>
+        <?php echo $language['name']?><input type="text" name="meno" class="col-5" placeholder="<?php echo $language['name2']?>" required><br>
         <?php echo $language['subject']?>
-        <input type="text" name="predmet">
+        <input type="text" name="predmet" class="col-5" placeholder="<?php echo $language['subject2']?>" required>
         <br>
         <?php echo $language['message']?><br>
         <input type="radio" name="rad1" id="yescheck1" onchange="changeradio()" value="1" checked> Plain text
         <input type="radio" name="rad1" id="yescheck2" onchange="changeradio()" value="2"> Html text
 
-        <div id="plaintext"><textarea id="plaintext_area" name="plaintext_name" style="width: 50%; height: 300px"></textarea></div>
+        <div id="plaintext"><textarea id="plaintext_area" name="plaintext_name" class="form-control" style="width: 50%; height: 300px"></textarea></div>
         <div id="htmltext"><textarea id="froala-editor" name="noise"></textarea></div>
 
         <input type="submit" value="<?php echo $language['submit']?>" required>
@@ -344,31 +345,6 @@ if(isset($_GET['lang']) && $_GET['lang'] == 'sk'){$language = include('lang/svk.
 
 <?php
 
-function slugify($text,$strict = false) {
-    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-    // replace non letter or digits by -
-    $text = preg_replace('~[^\\pL\d.]+~u', '-', $text);
-
-    // trim
-    $text = trim($text, '-');
-    setlocale(LC_CTYPE, 'en_GB.utf8');
-    // transliterate
-    if (function_exists('iconv')) {
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-    }
-
-    // lowercase
-    $text = strtolower($text);
-    // remove unwanted characters
-    $text = preg_replace('~[^-\w.]+~', '', $text);
-    if (empty($text)) {
-        return 'empty_$';
-    }
-    if ($strict) {
-        $text = str_replace(".", "_", $text);
-    }
-    return $text;
-}
 
 
 if(isset($_POST["predmet"]))

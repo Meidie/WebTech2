@@ -26,7 +26,8 @@ return array(
     'subject2' =>'Predmet',
     'temp_id' => 'ID šablóny',
     'mailinfo'=> 'Mail Info',
-    'mail' => 'Mail'
+    'mail' => 'Mail',
+    'pw' => 'Heslo'
 )
 
 ?>

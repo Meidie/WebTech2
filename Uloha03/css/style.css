@@ -1,5 +1,5 @@
 body {
-    background: #D8D8D8;
+    background: #FAFAFA;
 }
 header{
     background-color: #222;
@@ -102,5 +102,8 @@ h2{
 
 input{
     margin-left: 10px;
+    margin-bottom: 10px;
+}
+#sablona{
     margin-bottom: 10px;
 }

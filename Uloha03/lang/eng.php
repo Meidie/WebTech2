@@ -27,6 +27,7 @@ return array(
     'subject2' =>'Subject',
     'temp_id' => 'Template ID',
     'mailinfo'=> 'Mail Info',
-    'mail' => 'Mail'
+    'mail' => 'Mail',
+    'pw'=>'Password'
 )
 ?>
