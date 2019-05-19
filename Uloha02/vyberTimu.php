@@ -33,12 +33,15 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'sk') {
 <?php
 include "congif.php";
 session_start();
+<<<<<<< HEAD
 
 //kontrola prihlasenia
 if(!isset($_SESSION['loggedIn'])){header('Location: ../index.php?lang='.$language['websiteLang']);  exit();}
 
 //TODO zrušiť mazanie SESSION, toto bolo použité len na testovanie!!!!!
 $_SESSION = array();
+=======
+>>>>>>> cfd21030709cdd66a7db694ca66cd7c9b81c7fb1
 ?>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark color-black">
