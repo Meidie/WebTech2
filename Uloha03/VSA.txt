@@ -1,0 +1,265 @@
+1. cvicenie
+------------
+ Class.forName("org.apache.derby.jdbc.ClientDriver");
+ Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/sample", "app", "app");
+ Statement st = con.createStatement();
+
+ResultSet rs = st.executeQuery("SELECT * FROM kniha");
+while (rs.next()) {
+   System.out.println(rs.getString(1));
+}
+
+//INSERT a UPDATE treba namiesto executeQuery volaù metÛdu executeUpdate.
+
+2. cvicenie
+------------
+Query q = em.createNativeQuery("SELECT * FROM T_OSOBA", Person.class);
+List<Person> list = q.getResultList();       
+for(Person p : list){
+    System.out.println(p);
+}
+
+
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("app2PU");
+EntityManager em = emf.createEntityManager();
+em.getTransaction().begin();
+em.persist(k);
+em.getTransaction().commit();
+
+3. cvicenie
+------------
+//JPA//
+
+TypedQuery<Osoba> all = em.createNamedQuery("Osoba.findAll", Osoba.class);
+  for (Osoba o: all.getResultList()) {
+     ...
+  }
+
+TypedQuery<Osoba> q = em.createNamedQuery("Osoba.findByMeno", Osoba.class);
+q.setParameter("meno", hladaneMeno);
+   ...
+
+//JPQL//
+
+TypedQuery<Osoba> q = em.createQuery("SELECT o FROM Osoba o WHERE o.vyska < 180", Osoba.class);
+ for (Osoba o: q.getResultList())
+     System.out.println(o);
+
+Query q = em.createQuery("SELECT COUNT(o) FROM Osoba o");
+int count = 0;
+count = (int)(long)q.getResultList().get(0);
+//int count = (int)q.getSingleResult();
+
+//JPA kontroler//
+
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("Cv3PU");
+OsobaJpaController dao = new OsobaJpaController(emf);      
+Osoba p = new Osoba(1L,"Pipi");
+dao.create(p);
+
+4. cvicenie
+------------
+//@ElementCollection
+
+//@ManyToMany(cascade=CascadeType.PERSIST)
+
+//@ManyToOne(cascade=CascadeType.PERSIST)
+
+//@OneToMany
+//@JoinColumn(name="vydavatel_fk")
+
+5. cvicenie
+------------
+//Obojsmern· 1:N - N:1
+// FK v datab·ze vûdy na strane N
+//Typick˝ prÌklad Vydavateæstvo - vyd·vanÈ Knihy
+
+@ManyToOne(cascade=CascadeType.PERSIST)
+private Vydavatelstvo vydavatel;
+@OneToMany(cascade=CascadeType.PERSIST, mappedBy="vydavatel")
+private List<Kniha> publikacia;
+
+//Obojsmern· N:N
+//vlastnÌk asoci·cie na hociktorej strane
+//Typick˝ prÌklad Kniha - Autor
+
+@ManyToMany
+private List<Kniha> dielo;
+@ManyToMany(mappedBy = "dielo")
+private List<Osoba> autor;
+
+//KompozÌcia
+//Typick˝ prÌklad - n·kupn˝ koöÌk
+//N·kupn˝ koöÌk obsahuje - vlastnÌ viacero poloûiek s vybran˝m tovarom. Poloûky mÙûu existovaù len ako s˙Ëasù koöÌka
+//ZvyËajne sa realizuje ako jednosmern· OneToMany asoci·cia, kontainer pozn· spravovanÈ komponenty, ale komponenty nemusia poznaù kontainer, v ktorom s˙.
+//KeÔûe ide o kompozÌciu, musÌ byù poloûka, ktor· je odstr·nen· z koöÌka, ˙plne odstr·nen· aj z datab·zy
+//To zabezpeËÌ parameter orphanRemoval pri anot·cii @OneToMany
+
+@OneToMany(cascade=CascadeType.REMOVE, orphanRemoval=true)
+@JoinColumn(name="KOSIK_FK")
+private List<Polozka> polozky;
+
+6. cvicenie
+------------
+//Asoci·cia 1:1
+//JPA anot·ciu @OneToOne. Takto anotovan˝ atrib˙t bez ÔalöÌch JPA anot·ciÌ a parametrov je namapovan˝ na samostatn˝ FK stÂpec, pracuje teda rovnako ako @ManyToOne.
+//@PrimaryKeyJoinColumn
+
+@OneToOne    
+@PrimaryKeyJoinColumn
+Adresa bydlisko;
+
+//KeÔûe prim·rny kl˙Ëe asociovan˝ch objektov musia byù rovnakÈ, neodpor˙Ëam pouûitie autogenerovan˝ch kl˙Ëov
+
+//Asoci·cia mÙûe byù aj obojsmern·
+@OneToOne(mappedBy="bydlisko") 
+private Osoba majitel;
+
+//Mapovanie dvoch tried do jednej tabuæky
+Pre anot·ciu referencie na asociovan˝ objekt vnorenej triedy sa pouûije @Embedded
+Pre anot·ciu vnorenej triedy sa pouûije @Embeddable (priËom nem· PK atrib˙t)
+
+@Embeddable
+public class Adresa implements Serializable 
+
+@Embedded
+Adresa bydlisko;
+
+//Mapovanie jednej triedy do viacer˝ch tabuliek
+@Entity
+@Table(name = "T_USER")
+@SecondaryTable(name="T_LOGIN")
+@Column(table= "T_LOGIN")
+
+//ZloûenÈ kæ˙Ëe
+Trieda reprezentuj˙ca kl˙Ë je @Embeddable
+V entitnej triede sa pouzije na oznaËenie kæ˙Ëa anot·cia @EmbeddedId
+
+@Embeddable
+public class PicturePK implements Serializable
+@EmbeddedId
+protected PicturePK key;
+
+7. cvicenie
+------------
+//DediËnosù
+SINGLE TABLE - default
+JOINED
+TABLE PER CLASS
+
+@Entity
+@Table(name="ELEMENT")
+@Inheritance(strategy = InheritanceType.JOINED)
+
+public class RectElement extends GuiElement
+
+// GeoObjekt bude abstraktn·
+@MappedSuperclass // namiesto @Entity ak nema byt rodicovska trieda entitou
+@Inheritance(strategy = InheritanceType.JOINED) 
+abstract public class GeoObjekt implements Serializable {
+
+8. cvicenie
+------------
+Vytvorenie web application projekt pre glassfish: >New Project >Java web >Web application ...
+Vytvorenie jednoduchÈho REST servisu v projekte: >New >other >Web Services >RESTful Webservices from Pattern ... next ... vybrat Simple Root Resource
+Vytvorenie testovacieho javascriptovÈho klienta v projekte: >Test RESTful Web Services ... ponechat predvolene OK
+
+//Dokument ako resource
+@GET
+    @Produces(MediaType.MULTIPART_FORM_DATA)
+    public Response getDokument() {
+        File f = new File("/home/igor/EDU/VSA/REST/soa_model.jpg");
+        if (!f.exists()) {
+            throw new WebApplicationException(404);
+        }
+        String mt = new MimetypesFileTypeMap().getContentType(f);
+        System.out.println(mt);              // vypisanie media-typu odosielaneho suboru
+        return Response.ok(f, mt).build();
+    }
+
+9. cvicenie
+------------
+@DELETE
+@Path("{index: [0-9]+}")
+public void deleteMenu(@PathParam("index") int x) 
+
+@Path("meno/{name: [A-Z].*}")
+
+/generic/meno/Robo
+public String getName(@PathParam("name") String name) 
+
+/generic/par?meno=Jano
+public String getParName(@QueryParam("meno") String name) 
+
+10. cvicenie
+------------
+@XmlRootElement
+public class Jedlo 
+
+//moze zle vygenerovat v takomto pripade
+@POST
+@Consumes(MediaType.APPLICATION_XML)
+@Produces(MediaType.TEXT_PLAIN)
+
+//vygeneruje nespravne
+public <T> T postXml(Object requestEntity, Class<T> responseType) throws ClientErrorException {
+   return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
+}
+
+//spravne
+public <T> T postXml(Object requestEntity, Class<T> responseType) throws ClientErrorException {
+   return webTarget.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
+}
+
+11. cvicenie
+------------
+
+SAXParserFactory spf = SAXParserFactory.newInstance();
+spf.setNamespaceAware(true);
+SAXParser sp = spf.newSAXParser();
+sp.parse("receptar.xml",new MyHandler());
+
+// saxParser.parse("/home/vsa/Desktop/WORK/Cvicenie11/adresarr.xml", new MyHandler());
+// throws ParserConfigurationException, SAXException, IOException
+
+//Handler
+
+import org.xml.sax.helpers.DefaultHandler; //!!!!
+
+public void characters
+public void endElement
+public void startElement
+
+
+Regular expression
+-------------------
+.       - Any Character Except New Line
+\d      - Digit (0-9)
+\D      - Not a Digit (0-9)
+\w      - Word Character (a-z, A-Z, 0-9, _)
+\W      - Not a Word Character
+\s      - Whitespace (space, tab, newline)
+\S      - Not Whitespace (space, tab, newline)
+
+\b      - Word Boundary
+\B      - Not a Word Boundary
+^       - Beginning of a String
+$       - End of a String
+
+[]      - Matches Characters in brackets
+[^ ]    - Matches Characters NOT in brackets
+|       - Either Or
+( )     - Group
+
+Quantifiers:
+*       - 0 or More
++       - 1 or More
+?       - 0 or One
+{3}     - Exact Number
+{3,4}   - Range of Numbers (Minimum, Maximum)
+
+
+#### Sample Regexs ####
+
+[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+
+
