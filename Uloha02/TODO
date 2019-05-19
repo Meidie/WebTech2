@@ -1,0 +1,89 @@
+fdfsaf
+
+--Prihlasenie
+sifrovanie hesiel
+
+--Zmeny sa musia diat in real time. Ziadne refreshe nie su potrebne pre nijakeho ucastnika stranky
+
+--ADMIN prostredie
+Prida studentov. Po po pridani sa mozu prihlasit a pouzivat studentske prostredie
+Po odsuhlaseni bodov v studentskom prostredi admin musia potvrdiť zmeny.
+
+--Student prostredie
+Rozdelia si body udelene adminom 
+Docasny stav sa musi niekam ukladat.
+
+
+Po odsuhlaseni tlacidlom je stav nemenny a tlacidla zablokovane
+Preklikavanie medzi predmetmi
+
+--Statistike udaje
+
+
+--Databazy
+Student(
+id PK
+Meno
+Email
+heslo
+
+)
+
+TimPredmetu(
+id teamu    ---- PK
+nazov predmetu
+body
+schvalene teamom (true/false)
+schvalene adminom (true/false)
+)
+
+ClenTimu( -- Prepojovacia tabulka
+id timu PK
+id studenta PK
+body jednotlivca
+suhlasSBodmi (true/false)
+)
+
+--- SQL
+create table timy(
+id int (10) primary key not null,
+nazovPredmetu varchar(255) not null,
+rok int(4) not null,
+body float(4),
+schvaleneKapitanom boolean,
+schvaleneAdminom boolean
+)
+
+ver 2
+create table timy(
+cisloTimu int (10) not null,
+skratkaPredmetu varchar(255) not null,
+PRIMARY KEY (skratkaPredmetu, cisloTimu),
+body float(4),
+schvaleneKapitanom boolean,
+schvaleneAdminom boolean
+)
+
+create table clenoviaTimov(
+idTimu int(10) not null,
+idStudenta int(5) not null,
+primary key(idTimu, idStudenta),
+body float(4),
+suhlasSbodmi boolean
+)
+
+
+
+
+Clovek 1
+ADMIN stranka
+Import Export CSV
+Prihlasenie
+
+Clovek2
+STUDENT stranka
+statistika
+
+
+
+

@@ -1,0 +1,82 @@
+body {
+    color: #fff;
+    background: #FAFAFA;
+}
+
+header{
+    background-color: #222;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+h1{
+    margin-left: 40px;
+}
+#svk{
+
+    background-image: url("../img/logo.png");
+}
+.or-seperator {
+    margin: 20px 0 10px;
+    text-align: center;
+    border-top: 2px solid #ccc;
+}
+.or-seperator i {
+    padding: 0 10px;
+    background: #fff;
+    position: relative;
+    top: -11px;
+    z-index: 1;
+}
+#subjectSeparator{
+    width:500px;
+    border-top: 1px solid #3598dc;
+}
+h2{
+    color: #222222;
+}
+#caption{
+    margin-top: 50px;
+    color: #222222;
+}
+#data{
+    margin-top: 30px;
+    margin-left: 100px;
+    margin-right: 100px;
+    color: #222222;
+    font-size: 18px;
+}
+.color-black{
+    background-color: #222;
+}
+.text-white{
+    color: white ;
+}
+
+input[type='file'] {
+    width:218px;
+    height:38px;
+    opacity:0;
+    position: absolute;
+}
+#fileName{
+    padding: 0 10px;
+    height:38px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border: 0px;
+}
+#fileName:focus{
+    outline:none;
+}
+#uploadButton{
+    margin-top: -5px;
+    margin-left: 10px;
+}
+#uploadButton:hover{
+    background-color: #424242;
+}
+#pdfLink{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: none;
+}
+
